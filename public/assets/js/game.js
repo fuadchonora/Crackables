@@ -4,10 +4,12 @@ let restartGameBtn = $('#restartGame')
 
 let size = 5;
 let containerSize = 500;
+
 if ($(window).width() < 700){
     gameContainer.width(250).height(250);
     containerSize = 250;
 }
+
 let tileSize = containerSize/size;
 let matrix = [];
 let tileNo = 1;
@@ -54,7 +56,7 @@ initUI = () => {
             }else {
                 var tile = {
                     id: "tile-"+tileNo,
-                    class: "tile flex-center flex-column",
+                    class: "tile flex-center flex-column noselect",
                     css: {
                         width: tileSize,
                         height: tileSize
@@ -97,6 +99,8 @@ shufleTiles = () => {
 moveTile = (tile) => {
     tileNo = tile.html();
     let tempPos = tile.position();
+    tempPos.top = Math.round(tempPos.top);
+    tempPos.left = Math.round(tempPos.left);
     if(     ( ((tempPos.left == freeTilePos.x-tileSize) || (tempPos.left == freeTilePos.x+tileSize)) && (tempPos.top == freeTilePos.y) ) || 
             ( ((tempPos.top == freeTilePos.y-tileSize) || (tempPos.top == freeTilePos.y+tileSize)) && (tempPos.left == freeTilePos.x) ) ){
         //disableUI();
@@ -148,6 +152,7 @@ $('#gameContainer').on('click','.tile',function(event){
     if(uiEnabled == true){
         moveTile($(this));
     }
+    return false;
 })
 
 restartGameBtn.on('click', function(event){
