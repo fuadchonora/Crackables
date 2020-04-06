@@ -1,0 +1,21 @@
+.main-container{
+    padding: 5px;
+    background-color: brown;
+}
+.game-container{
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: brown;
+    border-radius: 5px;
+}
+.tile{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100px;
+    height: 100px;
+    background-color: darkcyan;
+    border: 2px solid brown;
+    transition: all 0.5s;
+}
