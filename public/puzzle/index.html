@@ -9,11 +9,11 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
   <!-- Bootstrap core CSS -->
-  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/css/bootstrap.min.css" rel="stylesheet">
   <!-- Material Design Bootstrap -->
-  <link href="assets/css/mdb.min.css" rel="stylesheet">
+  <link href="../assets/css/mdb.min.css" rel="stylesheet">
   <!-- Your custom styles (optional) -->
-  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -21,17 +21,16 @@
   <!-- Start your project here-->
   <div style="height: 100vh">
     <div class="flex-center flex-column">
-      <h1 id="containerTitle" class="animated fadeIn mb-2">My Projects</h1>
+      <h1 id="containerTitle" class="animated fadeIn mb-2">Slide It & Win</h1>
 
-      <h3 id="containerTitle" class="animated fadeIn mb-2"><i class="fas fa-gamepad m-2"></i>Games</h3>
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-danger m-2"><a href="/puzzle"><i class="fa fa-puzzle-piece m-2"></i>Puzzle</a></li>
-      </ul>
-      <br>
-      <h3 id="containerTitle" class="animated fadeIn mb-2"><i class="fas fa-globe-europe m-2"></i>Apps</h3>
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-danger m-2"><a href="/texmage"><i class="fas fa-images m-2"></i></i>Texmage</a></li>
-      </ul>
+      <div class="main-container">
+        <div id="gameContainer" class="game-container noselect">
+
+        </div>
+      </div>
+      <div>
+          <button id="restartGame" class="btn btn-danger">Restart</button>
+      </div>
     </div>
   </div>
   <!-- /Start your project here-->
@@ -49,15 +48,15 @@
   <script defer src="/__/firebase/init.js"></script>
 
   <!-- JQuery -->
-  <script type="text/javascript" src="assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="../assets/js/jquery.min.js"></script>
   <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="assets/js/popper.min.js"></script>
+  <script type="text/javascript" src="../assets/js/popper.min.js"></script>
   <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
   <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="assets/js/mdb.min.js"></script>
+  <script type="text/javascript" src="../assets/js/mdb.min.js"></script>
   <!-- Game core JavaScript -->
-  <script type="text/javascript" src="assets/js/game.js"></script>
+  <script type="text/javascript" src="../assets/js/game.js"></script>
 </body>
 
 </html>
