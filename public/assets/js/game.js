@@ -3,6 +3,12 @@ let containerTitle = $('#containerTitle');
 let restartGameBtn = $('#restartGame')
 
 let size = 5;
+let containerSize = 500;
+if ($(window).width() < 700){
+    gameContainer.width(250).height(250);
+    containerSize = 250;
+}
+let tileSize = containerSize/size;
 let matrix = [];
 let tileNo = 1;
 var uiEnabled = false;
@@ -14,8 +20,8 @@ initPosSet = () => {
     for(let i=0; i<size; i++){
         for(let j=0; j<size; j++){
             let set = {
-                x:i*100,
-                y:j*100,
+                x:i*tileSize,
+                y:j*tileSize,
             }
             posSet.push(set);
         }
@@ -37,23 +43,28 @@ initMatrix = () => {
 }
 
 initUI = () => {
+    // containerTitle.height(containerTitle.outerWidth())
     tileNo = 1;
     for(let idR in matrix){
         let row = matrix[idR];
         for(let idC in row){
             if(matrix[idR][idC] == null){
-                freeTilePos.x = idC * 100;
-                freeTilePos.y = idR * 100;
+                freeTilePos.x = idC * tileSize;
+                freeTilePos.y = idR * tileSize;
             }else {
                 var tile = {
                     id: "tile-"+tileNo,
                     class: "tile flex-center flex-column",
+                    css: {
+                        width: tileSize,
+                        height: tileSize
+                    }
                 };
                 var $div = $("<div>", tile);
                 $div.html(tileNo);
                 gameContainer.append($div);
-                let x = idC * 100;
-                let y = idR * 100;
+                let x = idC * tileSize;
+                let y = idR * tileSize;
                 document.getElementById("tile-"+tileNo).style.transform = "translate("+x+"px, "+y+"px)";
                 tileNo++;
             }
@@ -86,8 +97,8 @@ shufleTiles = () => {
 moveTile = (tile) => {
     tileNo = tile.html();
     let tempPos = tile.position();
-    if(     ( ((tempPos.left == freeTilePos.x-100) || (tempPos.left == freeTilePos.x+100)) && (tempPos.top == freeTilePos.y) ) || 
-            ( ((tempPos.top == freeTilePos.y-100) || (tempPos.top == freeTilePos.y+100)) && (tempPos.left == freeTilePos.x) ) ){
+    if(     ( ((tempPos.left == freeTilePos.x-tileSize) || (tempPos.left == freeTilePos.x+tileSize)) && (tempPos.top == freeTilePos.y) ) || 
+            ( ((tempPos.top == freeTilePos.y-tileSize) || (tempPos.top == freeTilePos.y+tileSize)) && (tempPos.left == freeTilePos.x) ) ){
         //disableUI();
         console.log('moving tile '+tileNo);
         document.getElementById("tile-"+tileNo).style.transform = "translate("+freeTilePos.x+"px, "+freeTilePos.y+"px)";
@@ -115,7 +126,7 @@ checkStatus = () => {
         let tile = $(this)
 
         let pos = tile.position();
-        let val = (pos.top*5/100)+(pos.left/100);
+        let val = (pos.top*size/tileSize)+(pos.left/tileSize);
         val = Math.round(val);
 
         if( parseInt(tile.html()) !== (val+1) ){
