@@ -247,7 +247,7 @@ function displayPlayers(players){
       col2 = "<td> "+players[i].userName+" </td>";
       col3 = "<td> "+time+" </td>";
       if(players[i].instaId && (players[i].instaId!= null || players[i].instaId != '')){
-        col2 = "<td> <a href='https://instagram.com/"+players[i].instaId+"'> "+players[i].userName+" </a></td>";
+        col2 = "<td> <a href='https://instagram.com/"+players[i].instaId+"' target='new'><i class='fab fa-instagram'></i> "+players[i].userName+" </a></td>";
       }
       row = col1+" "+col2+" "+col3;
 
@@ -301,7 +301,7 @@ saveBtn.on('click', function(){
     let name = formName.val();
     let instaId = formInstaId.val();
     let time = winTime;
-    if(name == '' || name == ' '){
+    if((name == '' || name == ' ') || timeRunning == true){
         return;
     }
     writeUserData(name, time, instaId);
