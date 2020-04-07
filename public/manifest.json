@@ -1,0 +1,15 @@
+{
+    "short_name": "games",
+    "name": "Games & Apps",
+    "icons": [
+      {
+        "src":"",
+        "sizes": "",
+        "type": ""
+      }
+    ],
+    "start_url": "/?utm_source=homescreen",
+    "background_color": "#000",
+    "theme_color": "#536878",
+    "display": "fullscreen"
+  }
