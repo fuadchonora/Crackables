@@ -17,10 +17,11 @@ var isRunning = false;
 var startTime = new Date();
 var frames = 1000/30;
 var speed = 5;
+var point = 0;
 
 
 initUI = () => {
-
+    
 }
 
 toggleCar = (car) => {
@@ -46,6 +47,7 @@ disableUI = () => {
 
 resetGame = () => {
     speed = 5;
+    point = 0;
     startTime = new Date();
     isRunning = true;
 }
@@ -59,43 +61,98 @@ startGame = () => {
     enableUI();
     resetGame();
     updateFrames();
+    feedObstacles();
 }
 
 updateFrames = () => {
     setInterval(function(){
         if(isRunning == true){
-            obst.each(function(){
+            $('#gameContainer').find('.obst').each(function(){
                 let thisObst = $(this)
                 thisObst.css('top', '+='+speed+'px');
-                childObst = thisObst.children('img');
+                childObst = thisObst.children();
                 if(thisObst.hasClass('obst-left')){ //left obst
                     if(childObst.hasClass('square')){ //square
                         if(checkCollission(childObst, carLeft)){
                             //game over
                             console.log('left road square collided');
-                            pauseGame();
+                            onGameOver();
+                            return;
                         }
                     }else { // round
                         if(checkCollission(childObst, carLeft)){
                             //add point
                             console.log('left road round collided');
-                            pauseGame();
+                            updatePoint();
                         }
                     }
                 }else { //right obst
                     if(childObst.hasClass('square')){ //square
-
+                        if(checkCollission(childObst, carRight)){
+                            //game over
+                            console.log('right road square collided');
+                            onGameOver();
+                            return;
+                        }
                     }else { // round
-
+                        if(checkCollission(childObst, carRight)){
+                            //add point
+                            console.log('right road round collided');
+                            updatePoint();
+                        }
                     }
                 }
-                if(parseInt(thisObst.css('top').replace('px','')) >= 800){
+                if(parseInt(thisObst.css('top').replace('px','')) >= 700){
+                    if(childObst.hasClass('round')){
+                        console.log('round missed.')
+                        onGameOver();
+                        return;
+                    }
                     console.log('removing')
                     thisObst.remove();
                 }
             })
         }
     },frames)
+}
+
+feedObstacles = () => {
+    if(isRunning == true){
+        setInterval(function(){
+            feedLeftObst();
+            setTimeout(function(){
+                feedRightObst();
+            },1000)
+        },1000)
+    }
+}
+feedLeftObst = () => {
+    let squareObject =   "<div class=\"obst obst-left square-cont square-cont-left flex-center flex-column\">"+
+                        "<object type=\"image/svg+xml\" class=\"square square-left\" data=\"img/square-left.svg\"></object>"+
+                        "</div>";
+    let roundObject =  "<div class=\"obst obst-left round-cont round-cont-left flex-center flex-column\">"+
+                        "<object type=\"image/svg+xml\" class=\"round round-left\" data=\"img/round-left.svg\"></object>"+
+                        "</div>";
+    let i = Math.floor(Math.random() * 3);
+    if(i == 0){
+        leftRoad.append(roundObject);
+    }else if(i == 1){
+        leftRoad.append(squareObject);
+    }
+}
+feedRightObst = () => {
+    let squareObject =   "<div class=\"obst obst-right square-cont square-cont-right flex-center flex-column\">"+
+                        "<object type=\"image/svg+xml\" class=\"square square-right\" data=\"img/square-right.svg\"></object>"+
+                        "</div>";
+    let roundObject =  "<div class=\"obst obst-right round-cont round-cont-right flex-center flex-column\">"+
+                        "<object type=\"image/svg+xml\" class=\"round round-right\" data=\"img/round-right.svg\"></object>"+
+                        "</div>";
+    let i = Math.floor(Math.random() * 3);
+    if(i == 0){
+        rightRoad.append(roundObject);
+    }else if(i == 1){
+        rightRoad.append(squareObject);
+    }
 }
 
 checkCollission = ($div1, $div2) => {
@@ -114,6 +171,14 @@ checkCollission = ($div1, $div2) => {
 
     if (b1 < y2 || y1 > b2 || r1 < x2 || x1 > r2) return false;
     return true;
+}
+
+updatePoint = () => {
+    point++;
+}
+
+onGameOver = () => {
+    pauseGame();
 }
 
 leftRoad.on('click', function(){
