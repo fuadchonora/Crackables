@@ -15,6 +15,9 @@
   <!-- Your custom styles (optional) -->
   <link href="css/style.css" rel="stylesheet">
 
+  <!-- Multitouch core JavaScript -->
+  <script type="text/javascript" src="../assets/js/magictouch.js"></script>
+
   <link rel="manifest" href="/manifest.json">
 </head>
 
@@ -89,8 +92,8 @@
 
   <!-- Start your project here-->
   <div style="height: 100vh;">
-    <div class="flex-center flex-column" style="height: 90vh;">
-      <h1 id="containerTitle" class="animated fadeIn mb-2">So Far So Good</h1>
+    <div class="flex-center flex-column" style="height: 800px;">
+      <!-- <h1 id="containerTitle" class="animated fadeIn mb-2">So Far So Good</h1> -->
       <!-- <h5 id="timeDOM" class="animated fadeIn mb-2">00:00:00.000</label></h5> -->
 
       <div class="main-container">
@@ -98,15 +101,33 @@
             <div class="row">
 
                 <div id="leftRoad" class="road col-6">
-                  <div id="cntainerCarLeft" class="container-car container-car-left">
-                      <img id="carLeft" class="car car-left" src="img/car.svg">
+
+                  <div class="obst obst-left square-cont square-cont-left flex-center flex-column">
+                    <img class="square square-left" src="img/square.svg">
                   </div>
+                  <div class="obst obst-left round-cont round-cont-left flex-center flex-column">
+                    <img class="round round-left" src="img/round.svg">
+                  </div>
+
+                  <div id="cntainerCarLeft" class="container-car container-car-left">
+                    <img id="carLeft" class="car car-left" src="img/car.svg">
+                  </div>
+
                 </div>
 
                 <div id="rightRoad" class="road col-6">
-                  <div id="cntainerCarRight" class="container-car container-car-right">
-                      <img id="carRight" class="car car-right" src="img/car.svg">
+
+                  <div class="obst obst-right square-cont square-cont-right flex-center flex-column">
+                    <img class="square square-right" src="img/square.svg">
                   </div>
+                  <div class="obst obst-right round-cont round-cont-right flex-center flex-column">
+                    <img class="round round-right" src="img/round.svg">
+                  </div>
+
+                  <div id="cntainerCarRight" class="container-car container-car-right">
+                    <img id="carRight" class="car car-right" src="img/car.svg">
+                  </div>
+
                 </div>
 
             </div>

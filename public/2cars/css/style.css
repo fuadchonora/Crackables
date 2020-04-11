@@ -6,8 +6,9 @@
 }
 .road{
     position: relative;
+    overflow: hidden;
     padding: 0px !important;
-    height: 100vh;
+    height: 800px;
     width: 100%;
     background-color: #25337a;
     border: 1px solid #839bf3;
@@ -26,6 +27,8 @@
 .car{
     height: 100px;
     width: 100px;
+    left: 0px;
+    top: 0px;
 }
 
 .slide-left{
@@ -58,4 +61,31 @@
     100% {
        transform: rotate(0deg);
     }
+}
+
+.round{
+    height: 80px;
+    width: 80px;
+    left: 0px;
+    top: 0px;
+}
+.square{
+    height: 80px;
+    width: 80px;
+    left: 0px;
+    top: 0px;
+}
+.round-cont{
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+.square-cont{
+    height: 100px;
+    width: 100px;
+    position: absolute;
+    left: 100px;
+    top: 0px;
 }
