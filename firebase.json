@@ -6,6 +6,11 @@
         "source": "/puzzle",
         "destination": "/puzzle",
         "type": 301
+      },
+      {
+        "source": "/2cars",
+        "destination": "/2cars",
+        "type": 301
       }
     ],
     "ignore": [
