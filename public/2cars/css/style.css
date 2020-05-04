@@ -1,35 +1,49 @@
+.wrapper {
+    overscroll-behavior: none;
+}
 #menu{
     display: none;
+    position: absolute;
 }
 
 .main-container{
-    width: 380px;
+    width: 100vh;
+    max-width: 400px;
 }
 .road{
     position: relative;
     overflow: hidden;
     padding: 0px !important;
-    height: 700px;
+    height: 100vh;
     width: 100%;
     background-color: #25337a;
     border: 1px solid #839bf3;
 }
+#point{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 60px;
+    width: 60px;
+    color: white;
+    font-size: x-large;
+}
 .container-car{
     position: absolute;
-    bottom: 10px;
+    width: 100px;
+    height: 100px;
+    bottom: 100px;
     transition: all 0.5s;
 }
 .container-car-left{
-    left: 100px;
+    left: 0px;
 }
 .container-car-right{
-    left: 0px;
+    left: 100px;
 }
 .car{
-    height: 100px;
-    width: 100px;
-    left: 0px;
-    top: 0px;
+    height: 80px;
+    width: 80px;
 }
 
 .slide-left{
@@ -65,14 +79,14 @@
 }
 
 .round{
-    height: 80px;
-    width: 80px;
+    height: 50px;
+    width: 50px;
     left: 0px;
     top: 0px;
 }
 .square{
-    height: 80px;
-    width: 80px;
+    height: 50px;
+    width: 50px;
     left: 0px;
     top: 0px;
 }
@@ -81,12 +95,22 @@
     width: 100px;
     position: absolute;
     left: 0px;
-    top: 0px;
+    top: -100px;
 }
 .square-cont{
     height: 100px;
     width: 100px;
     position: absolute;
     left: 100px;
-    top: 0px;
+    top: -100px;
 }
+
+.noselect {
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+  }

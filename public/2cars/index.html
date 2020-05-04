@@ -15,9 +15,6 @@
   <!-- Your custom styles (optional) -->
   <link href="css/style.css" rel="stylesheet">
 
-  <!-- Multitouch core JavaScript -->
-  <script type="text/javascript" src="../assets/js/magictouch.js"></script>
-
   <link rel="manifest" href="/manifest.json">
 </head>
 
@@ -91,8 +88,8 @@
   <!-- Central Modal Small -->
 
   <!-- Start your project here-->
-  <div style="height: 100vh;">
-    <div class="flex-center flex-column" style="height: 800px;">
+  <div>
+    <div class="flex-center flex-column">
       <!-- <h1 id="containerTitle" class="animated fadeIn mb-2">So Far So Good</h1> -->
       <!-- <h5 id="timeDOM" class="animated fadeIn mb-2">00:00:00.000</label></h5> -->
 
@@ -102,42 +99,24 @@
 
                 <div id="leftRoad" class="road col-6">
 
-                  <div class="obst obst-left square-cont square-cont-left flex-center flex-column">
-                    <object type="image/svg+xml" class="square square-left" data="img/square-left.svg"></object>
-                  </div>
-                  <div class="obst obst-left round-cont round-cont-left flex-center flex-column">
-                    <object type="image/svg+xml" class="round round-left" data="img/round-left.svg"></object>
-                  </div>
-
-                  <div id="cntainerCarLeft" class="container-car container-car-left">
-                    <object type="image/svg+xml" id="carLeft" class="car car-left" data="img/car-left.svg"></object>
+                  <div id="cntainerCarLeft" class=" container-car container-car-left flex-center flex-column">
+                    <img id="carLeft" class=" car car-left" src="img/car-left.svg">
                   </div>
 
                 </div>
 
                 <div id="rightRoad" class="road col-6">
 
-                  <div class="obst obst-right square-cont square-cont-right flex-center flex-column">
-                    <object type="image/svg+xml" class="square square-right" data="img/square-right.svg"></object>
-                  </div>
-                  <div class="obst obst-right round-cont round-cont-right flex-center flex-column">
-                    <object type="image/svg+xml" class="round round-right" data="img/round-right.svg"></object>
+                  <div id="cntainerCarRight" class=" container-car container-car-right flex-center flex-column">
+                    <img id="carRight" class=" car car-right" src="img/car-right.svg">
                   </div>
 
-                  <div id="cntainerCarRight" class="container-car container-car-right">
-                    <object type="image/svg+xml" id="carRight" class="car car-right" data="img/car-right.svg"></object>
-                  </div>
+                  <div id="point" class="flex-center flex-column">0</div>
 
                 </div>
 
             </div>
         </div>
-      </div>
-      <div id="menu">
-          <button id="restartGame" class="btn btn-danger">Restart</button>
-          <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#leaderboardModel">
-            Leaderboard
-          </button>
       </div>
     </div>
 
@@ -159,6 +138,8 @@
   <script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
   <!-- MDB core JavaScript -->
   <script type="text/javascript" src="../assets/js/mdb.min.js"></script>
+  <!-- Image explode core JavaScript -->
+  <script type="text/javascript" src="../assets/js/jquery.imgexplode.js"></script>
 
   <!-- update the version number as needed -->
   <script src="/__/firebase/7.13.2/firebase-app.js"></script>

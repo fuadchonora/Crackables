@@ -1,3 +1,6 @@
+.wrapper {
+    overscroll-behavior: none
+}
 .main-container{
     padding: 5px;
     background-color: brown;

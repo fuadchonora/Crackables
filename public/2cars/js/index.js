@@ -2,15 +2,22 @@ let road = $('.road');
 let leftRoad = $('#leftRoad');
 let rightRoad = $('#rightRoad');
 
+let pointView = $('#point');
+
+let gameContainer = $('#gameContainer');
 let cntainerCarLeft = $('#cntainerCarLeft');
 let cntainerCarRight = $('#cntainerCarRight');
-cntainerCarLeft.isLeft = false;
-cntainerCarRight.isLeft = true;
+cntainerCarLeft.isLeft = true;
+cntainerCarRight.isLeft = false;
 
 let carLeft = $('#carLeft');
 let carRight = $('#carRight');
 
 let obst = $('.obst');
+let leftObst = $('.obst-left');
+let rightObst = $('.obst-right');
+
+let windowHeight = $( window ).height();
 
 var UIEnabled = false;
 var isRunning = false;
@@ -21,20 +28,29 @@ var point = 0;
 
 
 initUI = () => {
-    
+    console.log('Initing UI');
+    console.log('window height:'+windowHeight);
+    console.log('height1:'+gameContainer.height());
+    gameContainer.height(windowHeight);
+    console.log('height2:'+gameContainer.height());
+    road.each(function(){
+        $(this).height(windowHeight);
+    })
 }
 
 toggleCar = (car) => {
-    if(car.isLeft == false){
-        //slide left
-        car.css('left', '0px');
-        car.removeClass("slide-left slide-right").addClass("slide-left");
-        car.isLeft = true;
-    }else {
-        //slide right
-        car.css('left', '100px');
-        car.removeClass("slide-right slide-left").addClass("slide-right");
-        car.isLeft = false;
+    if(isRunning == true){
+        if(car.isLeft == false){
+            //slide left
+            car.css('left', '0px');
+            car.removeClass("slide-left slide-right").addClass("slide-left");
+            car.isLeft = true;
+        }else {
+            //slide right
+            car.css('left', '100px');
+            car.removeClass("slide-right slide-left").addClass("slide-right");
+            car.isLeft = false;
+        }
     }
 }
 
@@ -67,7 +83,7 @@ startGame = () => {
 updateFrames = () => {
     setInterval(function(){
         if(isRunning == true){
-            $('#gameContainer').find('.obst').each(function(){
+            gameContainer.find('.obst').each(function(){
                 let thisObst = $(this)
                 thisObst.css('top', '+='+speed+'px');
                 childObst = thisObst.children();
@@ -77,6 +93,7 @@ updateFrames = () => {
                             //game over
                             console.log('left road square collided');
                             onGameOver();
+                            childObst.explode();
                             return;
                         }
                     }else { // round
@@ -84,6 +101,10 @@ updateFrames = () => {
                             //add point
                             console.log('left road round collided');
                             updatePoint();
+                            thisObst.remove();
+                            delete thisObst;
+                            delete this;
+                            return;
                         }
                     }
                 }else { //right obst
@@ -92,6 +113,7 @@ updateFrames = () => {
                             //game over
                             console.log('right road square collided');
                             onGameOver();
+                            childObst.explode();
                             return;
                         }
                     }else { // round
@@ -99,10 +121,14 @@ updateFrames = () => {
                             //add point
                             console.log('right road round collided');
                             updatePoint();
+                            thisObst.remove();
+                            delete thisObst;
+                            delete this;
+                            return;
                         }
                     }
                 }
-                if(parseInt(thisObst.css('top').replace('px','')) >= 700){
+                if(parseInt(thisObst.css('top').replace('px','')) >= 800){
                     if(childObst.hasClass('round')){
                         console.log('round missed.')
                         onGameOver();
@@ -110,6 +136,9 @@ updateFrames = () => {
                     }
                     console.log('removing')
                     thisObst.remove();
+                    delete thisObst;
+                    delete this;
+                    return;
                 }
             })
         }
@@ -117,41 +146,55 @@ updateFrames = () => {
 }
 
 feedObstacles = () => {
-    if(isRunning == true){
-        setInterval(function(){
+    setInterval(function(){
+        if(isRunning == true){
             feedLeftObst();
             setTimeout(function(){
                 feedRightObst();
-            },1000)
-        },1000)
-    }
+            },500)
+        }
+    },1000)
 }
 feedLeftObst = () => {
-    let squareObject =   "<div class=\"obst obst-left square-cont square-cont-left flex-center flex-column\">"+
-                        "<object type=\"image/svg+xml\" class=\"square square-left\" data=\"img/square-left.svg\"></object>"+
+    let squareObject =  "<div class=\"  obst obst-left square-cont square-cont-left flex-center flex-column\">"+
+                        "<img class=\"  square square-left\" src=\"img/square-left.svg\">"+
                         "</div>";
-    let roundObject =  "<div class=\"obst obst-left round-cont round-cont-left flex-center flex-column\">"+
-                        "<object type=\"image/svg+xml\" class=\"round round-left\" data=\"img/round-left.svg\"></object>"+
+    let roundObject =  "<div class=\"  obst obst-left round-cont round-cont-left flex-center flex-column\">"+
+                        "<img class=\"  round round-left\" src=\"img/round-left.svg\">"+
                         "</div>";
     let i = Math.floor(Math.random() * 3);
+    let leftOrRight = 0;
+    let ilr = Math.floor(Math.random() * 2);
+    if(ilr == 1){
+        leftOrRight = 100;
+    }
     if(i == 0){
         leftRoad.append(roundObject);
+        $(roundObject).css('left', leftOrRight+'px');
     }else if(i == 1){
         leftRoad.append(squareObject);
+        $(squareObject).css('left', leftOrRight+'px');
     }
 }
 feedRightObst = () => {
-    let squareObject =   "<div class=\"obst obst-right square-cont square-cont-right flex-center flex-column\">"+
-                        "<object type=\"image/svg+xml\" class=\"square square-right\" data=\"img/square-right.svg\"></object>"+
-                        "</div>";
-    let roundObject =  "<div class=\"obst obst-right round-cont round-cont-right flex-center flex-column\">"+
-                        "<object type=\"image/svg+xml\" class=\"round round-right\" data=\"img/round-right.svg\"></object>"+
-                        "</div>";
     let i = Math.floor(Math.random() * 3);
+    let leftOrRight = 0;
+    let ilr = Math.floor(Math.random() * 2);
+    if(ilr == 1){
+        leftOrRight = 100;
+    }
+    let squareObject =  "<div class=\"  obst obst-right square-cont square-cont-right flex-center flex-column\">"+
+                        "<img class=\"  square square-right\" src=\"img/square-right.svg\">"+
+                        "</div>";
+    let roundObject =  "<div class=\"  obst obst-right round-cont round-cont-right flex-center flex-column\">"+
+                        "<img class=\"  round round-right\" src=\"img/round-right.svg\">"+
+                        "</div>";
     if(i == 0){
         rightRoad.append(roundObject);
+        $(roundObject).css('left', leftOrRight+'px');
     }else if(i == 1){
         rightRoad.append(squareObject);
+        $(squareObject).css('left', leftOrRight+'px');
     }
 }
 
@@ -175,6 +218,7 @@ checkCollission = ($div1, $div2) => {
 
 updatePoint = () => {
     point++;
+    pointView.html(point);
 }
 
 onGameOver = () => {
@@ -184,10 +228,24 @@ onGameOver = () => {
 leftRoad.on('click', function(){
     toggleCar(cntainerCarLeft);
 })
+carLeft.on('click', function(){
+    toggleCar(cntainerCarLeft);
+})
+leftObst.on('click', function(){
+    toggleCar(cntainerCarLeft);
+})
+
 
 rightRoad.on('click', function(){
     toggleCar(cntainerCarRight);
 })
+carRight.on('click', function(){
+    toggleCar(cntainerCarRight);
+})
+rightObst.on('click', function(){
+    toggleCar(cntainerCarRight);
+})
+
 
 var time_stamp = 0; // Or Date.now()
 window.addEventListener("touchstart", function(event_) {
