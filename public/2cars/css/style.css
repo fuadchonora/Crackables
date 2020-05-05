@@ -7,8 +7,11 @@
 }
 
 .main-container{
-    width: 100vh;
+    width: 100%;
     max-width: 400px;
+}
+.game-container-row{
+    margin: 0px !important;
 }
 .road{
     position: relative;
@@ -94,14 +97,12 @@
     height: 100px;
     width: 100px;
     position: absolute;
-    left: 0px;
     top: -100px;
 }
 .square-cont{
     height: 100px;
     width: 100px;
     position: absolute;
-    left: 100px;
     top: -100px;
 }
 

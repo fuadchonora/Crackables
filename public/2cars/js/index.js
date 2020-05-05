@@ -22,8 +22,9 @@ let windowHeight = $( window ).height();
 var UIEnabled = false;
 var isRunning = false;
 var startTime = new Date();
-var frames = 1000/30;
+var fps = 30;
 var speed = 5;
+var feedSpeed = 1500;
 var point = 0;
 
 
@@ -72,77 +73,88 @@ pauseGame = () => {
     isRunning = false;
 }
 
+updateSpeed = () => {
+    setInterval(function(){
+        if(isRunning){
+            speed += 1;
+            feedSpeed -= 100;
+        }
+    },5000)
+}
+
 startGame = () => {
     initUI();
     enableUI();
     resetGame();
     updateFrames();
+    updateSpeed();
     feedObstacles();
 }
 
 updateFrames = () => {
-    setInterval(function(){
-        if(isRunning == true){
-            gameContainer.find('.obst').each(function(){
-                let thisObst = $(this)
-                thisObst.css('top', '+='+speed+'px');
-                childObst = thisObst.children();
-                if(thisObst.hasClass('obst-left')){ //left obst
-                    if(childObst.hasClass('square')){ //square
-                        if(checkCollission(childObst, carLeft)){
-                            //game over
-                            console.log('left road square collided');
-                            onGameOver();
-                            childObst.explode();
-                            return;
-                        }
-                    }else { // round
-                        if(checkCollission(childObst, carLeft)){
-                            //add point
-                            console.log('left road round collided');
-                            updatePoint();
-                            thisObst.remove();
-                            delete thisObst;
-                            delete this;
-                            return;
-                        }
-                    }
-                }else { //right obst
-                    if(childObst.hasClass('square')){ //square
-                        if(checkCollission(childObst, carRight)){
-                            //game over
-                            console.log('right road square collided');
-                            onGameOver();
-                            childObst.explode();
-                            return;
-                        }
-                    }else { // round
-                        if(checkCollission(childObst, carRight)){
-                            //add point
-                            console.log('right road round collided');
-                            updatePoint();
-                            thisObst.remove();
-                            delete thisObst;
-                            delete this;
-                            return;
-                        }
-                    }
-                }
-                if(parseInt(thisObst.css('top').replace('px','')) >= 800){
-                    if(childObst.hasClass('round')){
-                        console.log('round missed.')
+    if(isRunning == true){
+        gameContainer.find('.obst').each(function(){
+            let thisObst = $(this)
+            thisObst.css('top', '+='+speed+'px');
+            childObst = thisObst.children();
+            if(thisObst.hasClass('obst-left')){ //left obst
+                if(childObst.hasClass('square')){ //square
+                    if(checkCollission(childObst, carLeft)){
+                        //game over
+                        console.log('left road square collided');
                         onGameOver();
+                        childObst.explode();
                         return;
                     }
+                }else { // round
+                    if(checkCollission(childObst, carLeft)){
+                        //add point
+                        console.log('left road round collided');
+                        updatePoint();
+                        thisObst.remove();
+                        delete thisObst;
+                        delete this;
+                        return;
+                    }
+                }
+            }else { //right obst
+                if(childObst.hasClass('square')){ //square
+                    if(checkCollission(childObst, carRight)){
+                        //game over
+                        console.log('right road square collided');
+                        onGameOver();
+                        childObst.explode();
+                        return;
+                    }
+                }else { // round
+                    if(checkCollission(childObst, carRight)){
+                        //add point
+                        console.log('right road round collided');
+                        updatePoint();
+                        thisObst.remove();
+                        delete thisObst;
+                        delete this;
+                        return;
+                    }
+                }
+            }
+            if(parseInt(thisObst.css('top').replace('px','')) >= (windowHeight-100) ){
+                if(childObst.hasClass('round')){
+                    console.log('round missed.')
+                    onGameOver();
+                    return;
+                }
+                if(parseInt(thisObst.css('top').replace('px','')) >= windowHeight ){
                     console.log('removing')
                     thisObst.remove();
                     delete thisObst;
                     delete this;
-                    return;
                 }
-            })
-        }
-    },frames)
+                return;
+            }
+        })
+    }
+    requestAnimationFrame(updateFrames);
 }
 
 feedObstacles = () => {
@@ -152,49 +164,52 @@ feedObstacles = () => {
             setTimeout(function(){
                 feedRightObst();
             },500)
+            console.log('temp:'+feedSpeed)
         }
-    },1000)
+    },feedSpeed)
 }
 feedLeftObst = () => {
-    let squareObject =  "<div class=\"  obst obst-left square-cont square-cont-left flex-center flex-column\">"+
-                        "<img class=\"  square square-left\" src=\"img/square-left.svg\">"+
-                        "</div>";
-    let roundObject =  "<div class=\"  obst obst-left round-cont round-cont-left flex-center flex-column\">"+
-                        "<img class=\"  round round-left\" src=\"img/round-left.svg\">"+
-                        "</div>";
-    let i = Math.floor(Math.random() * 3);
-    let leftOrRight = 0;
-    let ilr = Math.floor(Math.random() * 2);
-    if(ilr == 1){
-        leftOrRight = 100;
-    }
-    if(i == 0){
-        leftRoad.append(roundObject);
-        $(roundObject).css('left', leftOrRight+'px');
-    }else if(i == 1){
-        leftRoad.append(squareObject);
-        $(squareObject).css('left', leftOrRight+'px');
+    let squareObjectLeft =  "<div class=\"  obst obst-left square-cont square-cont-left flex-center flex-column\" style=\"left: 0px;\" >"+
+                                "<img class=\" square square-left\" src=\"img/square-left.svg\" >"+
+                            "</div>";
+    let roundObjectLeft =   "<div class=\"  obst obst-left round-cont round-cont-left flex-center flex-column\" style=\"left: 0px;\" >"+
+                                "<img class=\" round round-left\" src=\"img/round-left.svg\" >"+
+                            "</div>";
+    let squareObjectRight = "<div class=\"  obst obst-left square-cont square-cont-left flex-center flex-column\" style=\"left: 100px;\" >"+
+                                "<img class=\" square square-left\" src=\"img/square-left.svg\" >"+
+                            "</div>";
+    let roundObjectRight =  "<div class=\"  obst obst-left round-cont round-cont-left flex-center flex-column\"  style=\"left: 100px;\">"+
+                                "<img class=\" round round-left\" src=\"img/round-left.svg\" >"+
+                            "</div>";
+
+    let i = Math.floor(Math.random() * 6);
+    switch(i){
+        case 0: leftRoad.append(squareObjectLeft); break;
+        case 1: leftRoad.append(roundObjectLeft); break;
+        case 2: leftRoad.append(squareObjectRight); break;
+        case 3: leftRoad.append(roundObjectRight); break;
     }
 }
 feedRightObst = () => {
-    let i = Math.floor(Math.random() * 3);
-    let leftOrRight = 0;
-    let ilr = Math.floor(Math.random() * 2);
-    if(ilr == 1){
-        leftOrRight = 100;
-    }
-    let squareObject =  "<div class=\"  obst obst-right square-cont square-cont-right flex-center flex-column\">"+
-                        "<img class=\"  square square-right\" src=\"img/square-right.svg\">"+
-                        "</div>";
-    let roundObject =  "<div class=\"  obst obst-right round-cont round-cont-right flex-center flex-column\">"+
-                        "<img class=\"  round round-right\" src=\"img/round-right.svg\">"+
-                        "</div>";
-    if(i == 0){
-        rightRoad.append(roundObject);
-        $(roundObject).css('left', leftOrRight+'px');
-    }else if(i == 1){
-        rightRoad.append(squareObject);
-        $(squareObject).css('left', leftOrRight+'px');
+    let squareObjectLeft =  "<div class=\"  obst obst-right square-cont square-cont-right flex-center flex-column\" style=\"left: 0px;\" >"+
+                                "<img class=\" square square-right\" src=\"img/square-right.svg\" >"+
+                            "</div>";
+    let roundObjectLeft =   "<div class=\"  obst obst-right round-cont round-cont-right flex-center flex-column\" style=\"left: 0px;\" >"+
+                                "<img class=\" round round-right\" src=\"img/round-right.svg\" >"+
+                            "</div>";
+    let squareObjectRight = "<div class=\"  obst obst-right square-cont square-cont-right flex-center flex-column\" style=\"left: 100px;\" >"+
+                                "<img class=\" square square-right\" src=\"img/square-right.svg\" >"+
+                            "</div>";
+    let roundObjectRight =  "<div class=\"  obst obst-right round-cont round-cont-right flex-center flex-column\"  style=\"left: 100px;\">"+
+                                "<img class=\" round round-right\" src=\"img/round-right.svg\" >"+
+                            "</div>";
+
+    let i = Math.floor(Math.random() * 6);
+    switch(i){
+        case 0: rightRoad.append(squareObjectLeft); break;
+        case 1: rightRoad.append(roundObjectLeft); break;
+        case 2: rightRoad.append(squareObjectRight); break;
+        case 3: rightRoad.append(roundObjectRight); break;
     }
 }
 

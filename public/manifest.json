@@ -1,15 +1,66 @@
 {
-    "short_name": "games",
-    "name": "Games & Apps",
-    "icons": [
-      {
-        "src":"",
-        "sizes": "",
-        "type": ""
-      }
-    ],
-    "start_url": "/?utm_source=homescreen",
-    "background_color": "#000",
-    "theme_color": "#536878",
-    "display": "fullscreen"
-  }
+  "short_name": "Games",
+  "name": "Games & Apps",
+  "icons": [
+    {
+      "sizes": "512x512",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "384x384",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "192x192",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "180x180",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "167x167",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "152x152",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "144x144",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "128x128",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "120x120",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "96x96",
+      "src": "logo.png",
+      "type": "image/png"
+    },
+    {
+      "sizes": "72x72",
+      "src": "logo.png",
+      "type": "image/png"
+    }
+  ],
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": ".",
+  "background_color": "#502efd",
+  "theme_color": "#502efd"
+}
