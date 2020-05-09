@@ -86,37 +86,20 @@
     </div>
   </div>
   <!-- Central Modal Small -->
-
+<div id="elemnts" style="display: none;">
+  <img class="obstacle" id="circle-left" src="img/round-left.svg" alt="Circle Left">
+  <img class="obstacle" id="circle-right" src="img/round-right.svg" alt="Circe Right">
+  <img class="obstacle" id="square-left" src="img/square-left.svg" alt="Square Left">
+  <img class="obstacle" id="square-right" src="img/square-right.svg" alt="square Right">
+  <img class="car" id="car-left" src="img/car-left.svg" alt="Car Left">
+  <img class="car" id="car-right" src="img/car-right.svg" alt="Car Right">
+</div>
   <!-- Start your project here-->
   <div>
-    <div class="flex-center flex-column">
-      <!-- <h1 id="containerTitle" class="animated fadeIn mb-2">So Far So Good</h1> -->
-      <!-- <h5 id="timeDOM" class="animated fadeIn mb-2">00:00:00.000</label></h5> -->
 
-      <div class="main-container">
-        <div id="gameContainer" class="game-container noselect">
-            <div class="row game-container-row">
-
-                <div id="leftRoad" class="road col-6">
-
-                  <div id="cntainerCarLeft" class=" container-car container-car-left flex-center flex-column">
-                    <img id="carLeft" class=" car car-left" src="img/car-left.svg">
-                  </div>
-
-                </div>
-
-                <div id="rightRoad" class="road col-6">
-
-                  <div id="cntainerCarRight" class=" container-car container-car-right flex-center flex-column">
-                    <img id="carRight" class=" car car-right" src="img/car-right.svg">
-                  </div>
-
-                  <div id="point" class="flex-center flex-column">0</div>
-
-                </div>
-
-            </div>
-        </div>
+    <div class="main-container">
+      <div>
+        <canvas id="carsCanvas" width="400" height="800" style="border: 1px solid black;"></canvas>
       </div>
     </div>
 
