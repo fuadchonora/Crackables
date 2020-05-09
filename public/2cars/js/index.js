@@ -17,6 +17,14 @@ const c = canvas.getContext('2d');
 let windowWidth = $( window ).width();
 let windowHeight = $( window ).height() - 10;
 
+let rWidth;
+
+let lines = [
+    {x:windowWidth * 0.25, w:1},
+    {x:windowWidth * 0.5, w:2},
+    {x:windowWidth * 0.75, w:1}
+]
+
 let mouse = {
     x:0,
     y:0,
@@ -44,8 +52,8 @@ let squares = {};
 //event Listeners
 canvas.addEventListener("mousedown", mouseDown, false);
 // canvas.addEventListener("mousemove", mouseXY, false);
-// canvas.addEventListener("touchstart", touchDown, false);
-canvas.addEventListener("touchmove", touchXY, true);
+canvas.addEventListener("touchstart", touchDown, false);
+// canvas.addEventListener("touchmove", touchXY, true);
 // canvas.addEventListener("touchend", touchUp, false);
 
 // document.body.addEventListener("mouseup", mouseUp, false);
@@ -135,10 +143,10 @@ function mouseDown() {
     mouseXY();
 }
 
-// function touchDown() {
-//     console.log('mouseIsDown = 1');
-//     touchXY();
-// }
+function touchDown() {
+    // console.log('mouseIsDown = 1');
+    touchXY();
+}
 
 function mouseXY(e) {
     if (!e)
@@ -160,7 +168,10 @@ function touchXY(e) {
 }
 
 //Objects
-function Car(img, x, y, width, height, color){
+function Car(id, isLeft, img, x, y, width, height, color){
+    this.id = id;
+    this.isLeft = isLeft;
+    this.isMOving = false;
     this.x = x;
     this.y = y;
     this.velocity = {
@@ -178,18 +189,50 @@ function Car(img, x, y, width, height, color){
 
     this.toggle = function() {
 
-        if(this.x == 0 || this.x == 200){
-            this.x += 100;
+        if(this.isLeft){
+            console.log('moving right')
+            this.isLeft = false;
+            this.velocity.angle = 2;
+            this.velocity.x = 5;
         } else {
-            this.x -= 100;
+            console.log('moving left')
+            this.isLeft = true;
+            this.velocity.angle = -2;
+            this.velocity.x = -5;
         }
+    }
 
+    this.update = function(){
+
+        if(this.id == 0 && (this.x < 0 || this.x > rWidth)){
+            this.velocity.x = 0;
+            this.isLeft? this.x = 0: this.x = rWidth;
+        }
+        else if(this.id == 1 && (this.x < rWidth*2 || this.x > rWidth*3)){
+            this.velocity.x = 0;
+            this.isLeft? this.x = rWidth*2: this.x = rWidth*3;
+        }
+        
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
+        this.angle += this.velocity.angle;
+
+        if(this.angle == 0){
+            this.velocity.angle = 0;
+        }else if(this.angle > 30){
+            this.velocity.angle = -2;
+        }else if(this.angle < -30){
+            this.velocity.angle = 2;
+        }
     }
 
     this.draw = function() {
         c.beginPath();
         c.save();
-        c.drawImage(this.img, this.x, this.y, this.width, this.height);
+        c.translate( this.x + this.width/2, this.y + this.height/2 );
+        c.rotate(this.angle * Math.PI/180);
+        c.fillStyle = "red";
+        c.drawImage(this.img, -this.width/2, -this.height/2, this.width, this.height);
         c.restore();
         c.closePath();
     }
@@ -286,8 +329,10 @@ function init(){
     canvas.width = windowWidth;
     canvas.height = windowHeight;
 
-    cars.push(new Car(carLeft, 0, windowHeight-200, 100, 100, 'red'));
-    cars.push(new Car(carRight, 200, windowHeight-200, 100, 100, 'blue'));
+    rWidth = canvas.width/4; //single road width
+
+    cars.push(new Car(0, true,  carLeft,  0,        windowHeight-rWidth*2, rWidth, rWidth, 'red' ));
+    cars.push(new Car(1, false, carRight, rWidth*3, windowHeight-rWidth*2, rWidth, rWidth, 'blue'));
 
     setInterval( () => {
         let id = Math.random();
@@ -295,9 +340,9 @@ function init(){
         if (!obstacle) return;
 
         if (obstacle.isCircle) {
-            circles[id] = new Circle(id, obstacle.obst, obstacle.x + 25, -50, 50, 50, 'red');
+            circles[id] = new Circle(id, obstacle.obst, obstacle.x + rWidth/4, -rWidth/2, rWidth/2, rWidth/2, 'red');
         } else {
-            squares[id] = new Square(id, obstacle.obst, obstacle.x + 25, -50, 50, 50, 'blue');
+            squares[id] = new Square(id, obstacle.obst, obstacle.x + rWidth/4, -rWidth/2, rWidth/2, rWidth/2, 'blue');
         }
     },2000)
 }
@@ -308,8 +353,12 @@ function update() {
         if(!isRunning) return;
 
         c.clearRect(0, 0, canvas.width, canvas.height);
+
+        for(let i in cars){
+            cars[i].update();
+        }
         
-        for(let  i in circles){
+        for(let i in circles){
             circles[i].update(cars);
         }
         for(let i in squares){
