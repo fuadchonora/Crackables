@@ -14,27 +14,15 @@ let canvas = document.getElementById('carsCanvas');
 const c = canvas.getContext('2d');
 
 //variables
-let windowWidth = $( window ).width();
-let windowHeight = $( window ).height() - 10;
+let windowWidth = parseInt($( window ).width());
+let windowHeight = parseInt($( window ).height()) - 10;
 
 let rWidth;
-
-let lines = [
-    {x:windowWidth * 0.25, w:1},
-    {x:windowWidth * 0.5, w:2},
-    {x:windowWidth * 0.75, w:1}
-]
+let obstacleWidth;
 
 let mouse = {
     x:0,
     y:0,
-}
-
-let colors = {
-    bg:'#CCCCCC',
-    white: '#ffffff',
-    left: 'red',
-    right: 'blue',
 }
 
 let UIEnabled = false;
@@ -42,7 +30,7 @@ let isRunning = false;
 let time_stamp = 0; // Or Date.now()
 let startTime = new Date();
 
-let speed = 0.002;
+let speed;
 let point = 0;
 
 let cars = [];
@@ -94,8 +82,11 @@ function pauseGame() {
 }
 
 function updatePoint(){
-    point++
+    point++;
     console.log('Point:'+point);
+    if(point%5 == 0){
+        speed++;
+    }
 }
 
 function gameOver(){
@@ -109,7 +100,7 @@ function distance(x1, y1, x2, y2) {
     return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
 }
 
-function randonIntFromRange(min, max) {
+function randomIntFromRange(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
@@ -151,8 +142,8 @@ function touchDown() {
 function mouseXY(e) {
     if (!e)
         var e = event;
-    canX = e.pageX - canvas.offsetLeft;
-    canY = e.pageY - canvas.offsetTop;
+    let canX = e.pageX - canvas.offsetLeft;
+    let canY = e.pageY - canvas.offsetTop;
     console.log(canX+' -> '+canY);
     canX < 200? cars[0].toggle(): cars[1].toggle();
 }
@@ -161,14 +152,21 @@ function touchXY(e) {
     if (!e)
         var e = event;
     e.preventDefault();
-    canX = e.targetTouches[0].pageX - canvas.offsetLeft;
-    canY = e.targetTouches[0].pageY - canvas.offsetTop;
+    let canX = e.targetTouches[0].pageX - canvas.offsetLeft;
+    let canY = e.targetTouches[0].pageY - canvas.offsetTop;
     console.log(canX+' -> '+canY);
     canX < 200? cars[0].toggle(): cars[1].toggle();
+
+    if(e.targetTouches[1]){
+        canX = e.targetTouches[1].pageX - canvas.offsetLeft;
+        canY = e.targetTouches[1].pageY - canvas.offsetTop;
+        console.log(canX+' -> '+canY);
+        canX < 200? cars[0].toggle(): cars[1].toggle();
+    }
 }
 
 //Objects
-function Car(id, isLeft, img, x, y, width, height, color){
+function Car(id, isLeft, img, x, y, width, height){
     this.id = id;
     this.isLeft = isLeft;
     this.isMOving = false;
@@ -184,7 +182,6 @@ function Car(id, isLeft, img, x, y, width, height, color){
     this.height = height;
     this.radious = height/2;
     this.angle = 0;
-    this.color = color;
     this.img = img;
 
     this.toggle = function() {
@@ -192,13 +189,13 @@ function Car(id, isLeft, img, x, y, width, height, color){
         if(this.isLeft){
             console.log('moving right')
             this.isLeft = false;
-            this.velocity.angle = 2;
-            this.velocity.x = 5;
+            this.velocity.angle = speed*0.5;
+            this.velocity.x = speed;
         } else {
             console.log('moving left')
             this.isLeft = true;
-            this.velocity.angle = -2;
-            this.velocity.x = -5;
+            this.velocity.angle = -speed*0.5;
+            this.velocity.x = -speed;
         }
     }
 
@@ -208,7 +205,7 @@ function Car(id, isLeft, img, x, y, width, height, color){
             this.velocity.x = 0;
             this.isLeft? this.x = 0: this.x = rWidth;
         }
-        else if(this.id == 1 && (this.x < rWidth*2 || this.x > rWidth*3)){
+        if(this.id == 1 && (this.x < rWidth*2 || this.x > rWidth*3)){
             this.velocity.x = 0;
             this.isLeft? this.x = rWidth*2: this.x = rWidth*3;
         }
@@ -217,13 +214,15 @@ function Car(id, isLeft, img, x, y, width, height, color){
         this.y += this.velocity.y;
         this.angle += this.velocity.angle;
 
-        if(this.angle == 0){
+        if(this.angle < 1 && this.angle > -1) {
             this.velocity.angle = 0;
-        }else if(this.angle > 30){
-            this.velocity.angle = -2;
-        }else if(this.angle < -30){
-            this.velocity.angle = 2;
+            this.angle = 0;
+        } else if (this.angle > 45) {
+            this.velocity.angle = -speed;
+        } else if (this.angle < -45) {
+            this.velocity.angle = speed;
         }
+
     }
 
     this.draw = function() {
@@ -237,7 +236,7 @@ function Car(id, isLeft, img, x, y, width, height, color){
         c.closePath();
     }
 }
-function Circle(id, img, x, y, width, height, color){
+function Circle(id, img, x, y, width, height){
     this.id = id;
     this.x = x;
     this.y = y;
@@ -245,7 +244,6 @@ function Circle(id, img, x, y, width, height, color){
     this.width = width;
     this.height = height;
     this.radious = height/2;
-    this.color = color;
     this.img = img;
 
     this.update = cars => {
@@ -253,7 +251,6 @@ function Circle(id, img, x, y, width, height, color){
         for(let i in cars){
 
             if(distance(this.x, this.y, cars[i].x, cars[i].y) - (this.height/2 + cars[i].height/2) + this.height * 0.2 < 0){
-                console.log('Circle Collided');
                 updatePoint();
                 delete circles[this.id];
                 delete this;
@@ -264,7 +261,6 @@ function Circle(id, img, x, y, width, height, color){
             console.log('Circle Missed');
             pauseGame();
             delete this;
-            return;
         }
 
         this.y += speed;
@@ -278,7 +274,7 @@ function Circle(id, img, x, y, width, height, color){
         c.closePath();
     }
 }
-function Square(id, img, x, y, width, height, color){
+function Square(id, img, x, y, width, height){
     this.id = id;
     this.x = x;
     this.y = y;
@@ -286,7 +282,6 @@ function Square(id, img, x, y, width, height, color){
     this.width = width;
     this.height = height;
     this.radious = height/2;
-    this.color = color;
     this.img = img;
 
     this.update = cars => {
@@ -303,7 +298,6 @@ function Square(id, img, x, y, width, height, color){
             console.log('removing');
             delete squares[this.id];
             delete this;
-            return;
         }
 
         this.y += speed;
@@ -322,17 +316,18 @@ function Square(id, img, x, y, width, height, color){
 
 function init(){
 
-    if(windowWidth > 400){
+    if(windowWidth > 700){
         windowWidth = 400;
     }
 
     canvas.width = windowWidth;
     canvas.height = windowHeight;
 
-    rWidth = canvas.width/4; //single road width
+    rWidth = parseInt(canvas.width/4); //single road width
+    obstacleWidth = parseInt(rWidth/2);
 
-    cars.push(new Car(0, true,  carLeft,  0,        windowHeight-rWidth*2, rWidth, rWidth, 'red' ));
-    cars.push(new Car(1, false, carRight, rWidth*3, windowHeight-rWidth*2, rWidth, rWidth, 'blue'));
+    cars.push(new Car(0, true,  carLeft,  0,        windowHeight-rWidth*2, rWidth, rWidth));
+    cars.push(new Car(1, false, carRight, rWidth*3, windowHeight-rWidth*2, rWidth, rWidth));
 
     setInterval( () => {
         let id = Math.random();
@@ -340,16 +335,16 @@ function init(){
         if (!obstacle) return;
 
         if (obstacle.isCircle) {
-            circles[id] = new Circle(id, obstacle.obst, obstacle.x + rWidth/4, -rWidth/2, rWidth/2, rWidth/2, 'red');
+            circles[id] = new Circle(id, obstacle.obst, obstacle.x + rWidth/4, -obstacleWidth, obstacleWidth, obstacleWidth);
         } else {
-            squares[id] = new Square(id, obstacle.obst, obstacle.x + rWidth/4, -rWidth/2, rWidth/2, rWidth/2, 'blue');
+            squares[id] = new Square(id, obstacle.obst, obstacle.x + rWidth/4, -obstacleWidth, obstacleWidth, obstacleWidth);
         }
-    },2000)
+    },1000)
 }
 
 //Animation Loop
 function update() {
-    setInterval( () => {
+        requestAnimationFrame(update);
         if(!isRunning) return;
 
         c.clearRect(0, 0, canvas.width, canvas.height);
@@ -365,7 +360,6 @@ function update() {
             squares[i].update(cars);
         }
 
-    },1000/100)
 }
 function animate() {
 
@@ -373,6 +367,29 @@ function animate() {
 
     requestAnimationFrame(animate);
     c.clearRect(0, 0, canvas.width, canvas.height);
+
+    c.beginPath();
+    c.fillStyle = "#25337a";
+    c.fillRect(0, 0, canvas.width, canvas.height);
+
+    c.moveTo(rWidth, 0);
+    c.lineTo(rWidth, windowHeight);
+    c.moveTo(rWidth*2, 0);
+    c.lineTo(rWidth*2, windowHeight);
+
+    c.moveTo(rWidth*3, 0);
+    c.lineTo(rWidth*3, windowHeight);
+
+    c.strokeStyle = "#839bf3";
+    c.lineWidth = 2;
+    c.stroke();
+    
+    c.font = "50px Arial";
+    c.fillStyle = "white";
+    c.textAlign = "center";
+    c.fillText(point, canvas.width-50, 50);
+    
+    c.closePath();
 
     cars.forEach(function(car){
         car.draw();
