@@ -1,66 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Puzzle Game</title>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-  <!-- Bootstrap core CSS -->
-  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Material Design Bootstrap -->
-  <link href="assets/css/mdb.min.css" rel="stylesheet">
-  <!-- Your custom styles (optional) -->
-  <link href="assets/css/style.css" rel="stylesheet">
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
 
-  <link rel="manifest" href="/manifest.json">
-</head>
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
 
-<body>
-
-  <!-- Start your project here-->
-  <div style="height: 100vh">
-    <div class="flex-center flex-column">
-      <h1 id="containerTitle" class="animated fadeIn mb-2">My Projects</h1>
-
-      <h3 id="containerTitle" class="animated fadeIn mb-2"><i class="fas fa-gamepad m-2"></i>Games</h3>
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-danger m-2"><a href="/puzzle"><i class="fa fa-puzzle-piece m-2"></i>Puzzle</a></li>
-        <li class="list-group-item list-group-item-danger m-2"><a href="/2cars"><i class="fa fa-puzzle-piece m-2"></i>2Cars</a></li>
-      </ul>
-      <br>
-      <h3 id="containerTitle" class="animated fadeIn mb-2"><i class="fas fa-globe-europe m-2"></i>Apps</h3>
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-danger m-2"><a href="/texmage"><i class="fas fa-images m-2"></i></i>Texmage</a></li>
-      </ul>
-    </div>
-  </div>
-  <!-- /Start your project here-->
-
-  <!-- SCRIPTS -->
-  <!-- JQuery -->
-  <script type="text/javascript" src="assets/js/jquery.min.js"></script>
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="assets/js/popper.min.js"></script>
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="assets/js/mdb.min.js"></script>
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      console.log("Will the service worker register?");
-      navigator.serviceWorker.register('service-worker.js')
-        .then(function(reg){
-          console.log("Yes, it did.");
-        }).catch(function(err) {
-          console.log("No it didn't. This happened: ", err)
-        });
-    }
-  </script>
-
-</body>
-
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
 </html>
