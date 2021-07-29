@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 
-const colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'magenta', 'orange', 'violet'];
+const colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'magenta', 'orange', 'gray'];
 
 let players = [];
 let grids = [];
@@ -204,7 +204,6 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		};
 
 		const checkGameStatus = () => {
-			console.log('isFirstPlayersCycle ' + isFirstPlayersCycle);
 			if (isFirstPlayersCycle) return false;
 
 			let foundPlayers = [];
@@ -222,6 +221,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					let playerIdx = newPlayers.findIndex((pl) => pl === player);
 					newPlayers.splice(playerIdx, 1);
 					console.log('removed player ', player);
+					if (player.color === currentPlayer.color) changeCurrentPlayer();
 					if (newPlayers.length === 1) {
 						console.log('GameOver GameOver GameOver GameOver GameOver GameOver');
 						isGameOver = true;
@@ -302,8 +302,9 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					let clickedGrid = grids[gridIdx];
 					if (clickedGrid.circles.length === clickedGrid.splitsTo.length) {
 						//split circles
-						refineGrids(gridIdx);
-						console.log('All Grids Refined');
+						refineGrids(gridIdx)
+							.then(() => console.log('All Grids Refined'))
+							.catch(console.error);
 					}
 
 					changeCurrentPlayer();
