@@ -1,0 +1,327 @@
+import React, { useRef, useEffect } from 'react';
+
+const colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'magenta', 'orange', 'violet'];
+
+let players = [];
+let grids = [];
+
+let currentPlayer = null;
+let isFirstPlayersCycle = false;
+let clickable = true;
+let isGameOver = false;
+
+class Player {
+	constructor(i) {
+		this.id = Math.random();
+		this.color = colors[i];
+		this.circles = [];
+	}
+}
+
+class Grid {
+	constructor(index, column, row, x, y) {
+		this.index = index;
+		this.column = column;
+		this.row = row;
+		this.x = x;
+		this.y = y;
+		this.splitsTo = [];
+		this.circles = [];
+	}
+}
+
+class Circle {
+	constructor(x, y, player) {
+		this.x = x;
+		this.y = y;
+		this.player = player;
+	}
+
+	move(x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	changePlayer(player) {
+		this.player = player;
+	}
+}
+
+const generateInitialGrids = (p, gw, gh, gameConfig) => {
+	let grids = [];
+	for (let i = 0; i < gameConfig.gridSize.x; i++) {
+		for (let j = 0; j < gameConfig.gridSize.y; j++) {
+			grids.push(new Grid(grids.length, i, j, (i + 1) * gw - 2 * p, (j + 1) * gh - 2 * p));
+		}
+	}
+
+	for (let i = 0; i < grids.length; i++) {
+		if (grids[i].column - 1 >= 0) {
+			let splitsToIdx = grids.findIndex(
+				(grid) => grid.column === grids[i].column - 1 && grid.row === grids[i].row
+			);
+			grids[i].splitsTo.push(splitsToIdx);
+		}
+		if (grids[i].column + 1 < gameConfig.gridSize.x) {
+			let splitsToIdx = grids.findIndex(
+				(grid) => grid.column === grids[i].column + 1 && grid.row === grids[i].row
+			);
+			grids[i].splitsTo.push(splitsToIdx);
+		}
+		if (grids[i].row - 1 >= 0) {
+			let splitsToIdx = grids.findIndex(
+				(grid) => grid.column === grids[i].column && grid.row === grids[i].row - 1
+			);
+			grids[i].splitsTo.push(splitsToIdx);
+		}
+		if (grids[i].row + 1 < gameConfig.gridSize.y) {
+			let splitsToIdx = grids.findIndex(
+				(grid) => grid.column === grids[i].column && grid.row === grids[i].row + 1
+			);
+			grids[i].splitsTo.push(splitsToIdx);
+		}
+	}
+
+	return grids;
+};
+
+const generateInitialPlayers = (gameConfig) => {
+	let players = [];
+	for (let i = 0; i < gameConfig.players; i++) players.push(new Player(i));
+	currentPlayer = players[0];
+	return players;
+};
+
+export default function ChainReactionGame({ gameConfig, setIsStarted }) {
+	//one grid's width and height
+	let gw = Math.round((window.innerWidth - 60) / gameConfig.gridSize.x);
+	let gh = Math.round((window.innerWidth - 60) / gameConfig.gridSize.x);
+	//grid width and height
+	let bw = gameConfig.gridSize.x * gw;
+	let bh = gameConfig.gridSize.y * gh;
+	//padding around grid
+	let p = 10;
+	//size of canvas
+	let cw = bw + p * 2 + 1;
+	let ch = bh + p * 2 + 1;
+
+	grids = generateInitialGrids(p, gw, gh, gameConfig);
+	players = generateInitialPlayers(gameConfig);
+
+	const canvasRef = useRef(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		const context = canvas.getContext('2d');
+
+		let frameCount = 0;
+		let animationFrameId;
+		isGameOver = false;
+
+		// const fixDpi = () => {
+		// 	let dpi = window.devicePixelRatio;
+		// 	//get CSS height
+		// 	//the + prefix casts it to an integer
+		// 	//the slice method gets rid of "px"
+		// 	let style_height = +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
+		// 	//get CSS width
+		// 	let style_width = +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
+		// 	//scale the canvas
+		// 	canvas.setAttribute('height', style_height * dpi);
+		// 	canvas.setAttribute('width', style_width * dpi);
+		// };
+
+		const drawGrids = (ctx) => {
+			for (let x = 0; x <= bw; x += gw) {
+				ctx.moveTo(x + p, p);
+				ctx.lineTo(x + p, bh + p);
+			}
+
+			for (let x = 0; x <= bh; x += gh) {
+				ctx.moveTo(p, x + p);
+				ctx.lineTo(bw + p, x + p);
+			}
+
+			ctx.strokeStyle = players.find((player) => player === currentPlayer).color;
+			ctx.stroke();
+		};
+
+		const draw = (ctx, frameCount) => {
+			grids.map((grid) =>
+				grid.circles.map((circle, index) => {
+					ctx.fillStyle = circle.player.color;
+					ctx.beginPath();
+					ctx.arc(
+						grid.x - index * p + p,
+						grid.y - index * p + p,
+						10 * Math.sin(frameCount * 0.02 * grid.circles.length) ** 2,
+						0,
+						2 * Math.PI
+					);
+					ctx.fill();
+					// ctx.font = '24px serif';
+					// ctx.fillText(grid.circles.length, grid.x + p, grid.y + 2 * p);
+					return true;
+				})
+			);
+		};
+
+		const refineGrids = (gridIdx) => {
+			return new Promise((resolve, reject) => {
+				console.log('refine started for gridIdx ' + gridIdx);
+
+				let grid = grids[gridIdx];
+				let toRefineIds = [];
+
+				grid.splitsTo.forEach(function (splitsToIdx) {
+					grids[splitsToIdx].circles.push(grid.circles[0]);
+					grids[splitsToIdx].circles.map((circle) => circle.changePlayer(grid.circles[0].player));
+					if (grids[gridIdx].circles.length > 0) grids[gridIdx].circles.shift();
+
+					if (grids[splitsToIdx].circles.length === grids[splitsToIdx].splitsTo.length) {
+						toRefineIds.push(splitsToIdx);
+					}
+				});
+
+				checkGameStatus();
+
+				let promises = [];
+				if (toRefineIds.length > 0) {
+					setTimeout(() => {
+						toRefineIds.forEach((splitsToIdx) => {
+							promises.push(refineGrids(splitsToIdx));
+							return true;
+						});
+					}, 1000);
+
+					setTimeout(() => {
+						Promise.all(promises).then(resolve).catch(reject);
+					}, 1000 * toRefineIds.length + 500);
+				} else {
+					resolve();
+				}
+			});
+		};
+
+		const checkGameStatus = () => {
+			console.log('isFirstPlayersCycle ' + isFirstPlayersCycle);
+			if (isFirstPlayersCycle) return false;
+
+			let foundPlayers = [];
+
+			grids.map((grid) =>
+				grid.circles.map((circle) => {
+					if (!foundPlayers.includes(circle.player)) foundPlayers.push(circle.player);
+					return true;
+				})
+			);
+
+			let newPlayers = [...players];
+			players.map((player) => {
+				if (!foundPlayers.includes(player)) {
+					let playerIdx = newPlayers.findIndex((pl) => pl === player);
+					newPlayers.splice(playerIdx, 1);
+					console.log('removed player ', player);
+					if (newPlayers.length === 1) {
+						console.log('GameOver GameOver GameOver GameOver GameOver GameOver');
+						isGameOver = true;
+					}
+				}
+				return true;
+			});
+			players = newPlayers;
+		};
+
+		const changeCurrentPlayer = () => {
+			let currentPlayerIdx = players.findIndex((player) => player === currentPlayer);
+
+			if (currentPlayerIdx !== 0 && !currentPlayerIdx) {
+				return console.error('player is undefined');
+			} else if (currentPlayerIdx === players.length - 1) {
+				currentPlayer = players[0];
+				isFirstPlayersCycle = false;
+			} else {
+				currentPlayer = players[currentPlayerIdx + 1];
+			}
+		};
+
+		//Our draw came here
+		const render = () => {
+			frameCount++;
+			context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+			if (!isGameOver) {
+				drawGrids(context);
+				draw(context, frameCount);
+			} else {
+				//render game over
+				context.fillStyle = players[0].color;
+				context.textAlign = 'center';
+				context.font = '48px Poppins';
+				context.fillText(
+					`${players[0].color.toUpperCase()} Wins!`,
+					context.canvas.width / 2,
+					context.canvas.height / 2
+				);
+			}
+			animationFrameId = window.requestAnimationFrame(render);
+		};
+		render();
+
+		//Events
+		canvas.addEventListener(
+			'click',
+			(e) => {
+				console.log('(' + clickable + ') clicked ' + e.pageX, +' ' + e.pageY);
+				if (isGameOver) {
+					//go home
+					setIsStarted(false);
+				} else if (clickable) {
+					clickable = false;
+					let player = players.find((player) => player === currentPlayer);
+					let clickedX = e.pageX - 2 * p;
+					let clickedY = e.pageY - 2 * p;
+
+					let gridIdx = 0;
+					for (let i = 0; i < grids.length; i++) {
+						let grid = grids[i];
+						if (clickedX <= grid.x + 2 * p && clickedY <= grid.y + 2 * p) {
+							if (grids[i].circles.length > 0) {
+								console.log('clicking on wrong grid');
+								if (grids[i].circles[0].player !== player) {
+									clickable = true;
+									return;
+								}
+							}
+
+							grids[i].circles.push(new Circle(grid.x, grid.y, player));
+							gridIdx = i;
+							break;
+						}
+					}
+
+					let clickedGrid = grids[gridIdx];
+					if (clickedGrid.circles.length === clickedGrid.splitsTo.length) {
+						//split circles
+						refineGrids(gridIdx);
+						console.log('All Grids Refined');
+					}
+
+					changeCurrentPlayer();
+
+					clickable = true;
+				}
+			},
+			false
+		);
+
+		return () => {
+			window.cancelAnimationFrame(animationFrameId);
+		};
+	});
+
+	return (
+		<div>
+			<canvas ref={canvasRef} width={cw} height={ch}></canvas>
+		</div>
+	);
+}

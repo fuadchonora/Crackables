@@ -1,0 +1,14 @@
+html {
+	scroll-behavior: smooth;
+}
+
+html,
+body {
+	font-family: 'Poppins', sans-serif;
+	margin: 10px;
+}
+
+body {
+	background-color: rgb(29, 29, 29);
+	color: white;
+}
