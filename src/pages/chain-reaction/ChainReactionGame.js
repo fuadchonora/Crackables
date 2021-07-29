@@ -303,13 +303,16 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					if (clickedGrid.circles.length === clickedGrid.splitsTo.length) {
 						//split circles
 						refineGrids(gridIdx)
-							.then(() => console.log('All Grids Refined'))
+							.then(() => {
+								console.log('All Grids Refined');
+								changeCurrentPlayer();
+								clickable = true;
+							})
 							.catch(console.error);
+					} else {
+						changeCurrentPlayer();
+						clickable = true;
 					}
-
-					changeCurrentPlayer();
-
-					clickable = true;
 				}
 			},
 			false
