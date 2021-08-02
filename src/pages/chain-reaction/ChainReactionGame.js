@@ -4,6 +4,7 @@ const colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'magenta', 'orange', '
 
 let players = [];
 let grids = [];
+let explosions = [];
 
 let currentPlayer = null;
 let isFirstPlayersCycle = false;
@@ -149,6 +150,30 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		};
 
 		const draw = (ctx, frameCount) => {
+			explosions.map((explosion) => {
+				explosion.arcs.map((arc) => {
+					ctx.save();
+					ctx.globalAlpha = explosion.opacity;
+					ctx.fillStyle = explosion.color;
+					ctx.beginPath();
+					ctx.arc(arc.curX, arc.curY, 10, 0, 2 * Math.PI);
+					ctx.fill();
+					ctx.restore();
+
+					if (arc.tarX > arc.curX) arc.curX += 3;
+					else if (arc.tarX < arc.curX) arc.curX -= 3;
+
+					if (arc.tarY > arc.curY) arc.curY += 3;
+					else if (arc.tarY < arc.curY) arc.curY -= 3;
+
+					return true;
+				});
+
+				if (explosion.opacity > 0) explosion.opacity = explosion.opacity - 0.025;
+
+				return true;
+			});
+
 			grids.map((grid) =>
 				grid.circles.map((circle, index) => {
 					ctx.fillStyle = circle.player.color;
@@ -175,6 +200,8 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 				let grid = grids[gridIdx];
 				let toRefineIds = [];
 
+				createExplosion(grid);
+
 				grid.splitsTo.forEach(function (splitsToIdx) {
 					grids[splitsToIdx].circles.push(grid.circles[0]);
 					grids[splitsToIdx].circles.map((circle) => circle.changePlayer(grid.circles[0].player));
@@ -194,15 +221,41 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 							promises.push(refineGrids(splitsToIdx));
 							return true;
 						});
-					}, 1000);
+					}, 500);
 
 					setTimeout(() => {
 						Promise.all(promises).then(resolve).catch(reject);
-					}, 1000 * toRefineIds.length + 500);
+					}, 500 * toRefineIds.length + 500);
 				} else {
 					resolve();
 				}
 			});
+		};
+
+		const createExplosion = (grid) => {
+			let explosion = {
+				id: grid.index,
+				color: grid.circles[0].player.color,
+				opacity: 1.0,
+				startX: grid.x,
+				startY: grid.y,
+				arcs: [],
+			};
+			grid.splitsTo.map((splitsToIdx) =>
+				explosion.arcs.push({
+					curX: grid.x,
+					curY: grid.y,
+					tarX: grids[splitsToIdx].x,
+					tarY: grids[splitsToIdx].y,
+				})
+			);
+			explosions.push(explosion);
+			setTimeout(() => {
+				explosions.splice(
+					explosions.findIndex((exp) => exp.id === explosion.id),
+					1
+				);
+			}, 500);
 		};
 
 		const checkGameStatus = () => {
