@@ -92,6 +92,19 @@ const generateInitialPlayers = (gameConfig) => {
 	return players;
 };
 
+// const fixDpi = (canvas) => {
+// 	let dpi = window.devicePixelRatio;
+// 	//get CSS height
+// 	//the + prefix casts it to an integer
+// 	//the slice method gets rid of "px"
+// 	let style_height = +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
+// 	//get CSS width
+// 	let style_width = +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
+// 	//scale the canvas
+// 	canvas.setAttribute('height', style_height * dpi);
+// 	canvas.setAttribute('width', style_width * dpi);
+// };
+
 export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 	//one grid's width and height
 	let gw = Math.round((window.innerWidth - 60) / gameConfig.gridSize.x);
@@ -118,18 +131,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		let animationFrameId;
 		isGameOver = false;
 
-		// const fixDpi = () => {
-		// 	let dpi = window.devicePixelRatio;
-		// 	//get CSS height
-		// 	//the + prefix casts it to an integer
-		// 	//the slice method gets rid of "px"
-		// 	let style_height = +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
-		// 	//get CSS width
-		// 	let style_width = +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
-		// 	//scale the canvas
-		// 	canvas.setAttribute('height', style_height * dpi);
-		// 	canvas.setAttribute('width', style_width * dpi);
-		// };
+		// fixDpi(canvas);
 
 		const drawGrids = (ctx) => {
 			for (let x = 0; x <= bw; x += gw) {
@@ -152,9 +154,9 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					ctx.fillStyle = circle.player.color;
 					ctx.beginPath();
 					ctx.arc(
-						grid.x - index * p + p,
-						grid.y - index * p + p,
-						10 * Math.sin(frameCount * 0.02 * grid.circles.length) ** 2,
+						grid.x + 10 * Math.sin(frameCount * 0.02 * grid.circles.length) * (index % 2),
+						grid.y + 10 * Math.sin(frameCount * 0.02 * grid.circles.length) * (index + (1 % 2)),
+						10,
 						0,
 						2 * Math.PI
 					);
