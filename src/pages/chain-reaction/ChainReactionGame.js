@@ -150,15 +150,16 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		};
 
 		const draw = (ctx, frameCount) => {
-			explosions.map((explosion) => {
+			let explodedToIds = [];
+
+			explosions.map((explosion) =>
 				explosion.arcs.map((arc) => {
-					ctx.save();
-					ctx.globalAlpha = explosion.opacity;
 					ctx.fillStyle = explosion.color;
 					ctx.beginPath();
 					ctx.arc(arc.curX, arc.curY, 10, 0, 2 * Math.PI);
 					ctx.fill();
-					ctx.restore();
+
+					explodedToIds.push(arc.tarGridIdx);
 
 					if (arc.tarX > arc.curX) arc.curX += 3;
 					else if (arc.tarX < arc.curX) arc.curX -= 3;
@@ -167,15 +168,13 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					else if (arc.tarY < arc.curY) arc.curY -= 3;
 
 					return true;
-				});
-
-				if (explosion.opacity > 0) explosion.opacity = explosion.opacity - 0.025;
-
-				return true;
-			});
+				})
+			);
 
 			grids.map((grid) =>
 				grid.circles.map((circle, index) => {
+					if (explodedToIds.includes(grid.index) && index === grid.circles.length - 1) return true;
+
 					ctx.fillStyle = circle.player.color;
 					ctx.beginPath();
 					ctx.arc(
@@ -236,7 +235,6 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 			let explosion = {
 				id: grid.index,
 				color: grid.circles[0].player.color,
-				opacity: 1.0,
 				startX: grid.x,
 				startY: grid.y,
 				arcs: [],
@@ -247,6 +245,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					curY: grid.y,
 					tarX: grids[splitsToIdx].x,
 					tarY: grids[splitsToIdx].y,
+					tarGridIdx: grids[splitsToIdx].index,
 				})
 			);
 			explosions.push(explosion);
