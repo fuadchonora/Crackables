@@ -108,8 +108,9 @@ const generateInitialPlayers = (gameConfig) => {
 
 export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 	//one grid's width and height
-	let gw = Math.round((window.innerWidth - 60) / gameConfig.gridSize.x);
-	let gh = Math.round((window.innerWidth - 60) / gameConfig.gridSize.x);
+	let smallestLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth;
+	let gw = Math.round((smallestLength - 60) / gameConfig.gridSize.x);
+	let gh = Math.round((smallestLength - 60) / gameConfig.gridSize.x);
 	//grid width and height
 	let bw = gameConfig.gridSize.x * gw;
 	let bh = gameConfig.gridSize.y * gh;
@@ -156,7 +157,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 				explosion.arcs.map((arc) => {
 					ctx.fillStyle = explosion.color;
 					ctx.beginPath();
-					ctx.arc(arc.curX, arc.curY, 10, 0, 2 * Math.PI);
+					ctx.arc(arc.curX, arc.curY, p, 0, 2 * Math.PI);
 					ctx.fill();
 
 					explodedToIds.push(arc.tarGridIdx);
@@ -178,9 +179,9 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					ctx.fillStyle = circle.player.color;
 					ctx.beginPath();
 					ctx.arc(
-						grid.x + 10 * Math.sin(frameCount * 0.02 * grid.circles.length) * (index % 2),
-						grid.y + 10 * Math.sin(frameCount * 0.02 * grid.circles.length) * (index + (1 % 2)),
-						10,
+						grid.x + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index % 2),
+						grid.y + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index + (1 % 2)),
+						p,
 						0,
 						2 * Math.PI
 					);
@@ -195,6 +196,8 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		const refineGrids = (gridIdx) => {
 			return new Promise((resolve, reject) => {
 				console.log('refine started for gridIdx ' + gridIdx);
+
+				if (isGameOver) return resolve();
 
 				let grid = grids[gridIdx];
 				let toRefineIds = [];
@@ -278,7 +281,9 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					if (player.color === currentPlayer.color) changeCurrentPlayer();
 					if (newPlayers.length === 1) {
 						console.log('GameOver GameOver GameOver GameOver GameOver GameOver');
-						isGameOver = true;
+						setTimeout(() => {
+							isGameOver = true;
+						}, 1000);
 					}
 				}
 				return true;

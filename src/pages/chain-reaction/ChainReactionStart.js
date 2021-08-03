@@ -1,4 +1,7 @@
+import { IconButton } from '@material-ui/core';
 import React, { useState } from 'react';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Link } from 'react-router-dom';
 
 export default function ChainReactionStart({ setIsStarted, setgameConfig }) {
 	const [gridSize, setGridSize] = useState({ x: 6, y: 12 });
@@ -19,7 +22,12 @@ export default function ChainReactionStart({ setIsStarted, setgameConfig }) {
 
 	return (
 		<div>
-			<h2>Chain Reaction</h2>
+			<h1>
+				<IconButton aria-label="delete" color="secondary" component={Link} to="/">
+					<ArrowBackIcon fontSize="large" />
+				</IconButton>
+				Chain Reaction
+			</h1>
 
 			<br></br>
 
