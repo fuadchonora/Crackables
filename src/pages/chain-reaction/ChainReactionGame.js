@@ -115,7 +115,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 	let bw = gameConfig.gridSize.x * gw;
 	let bh = gameConfig.gridSize.y * gh;
 	//padding around grid
-	let p = 10;
+	let p = Math.round(gw / 6);
 	//size of canvas
 	let cw = bw + p * 2 + 1;
 	let ch = bh + p * 2 + 1;
