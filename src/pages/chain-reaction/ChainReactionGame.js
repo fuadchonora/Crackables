@@ -93,19 +93,6 @@ const generateInitialPlayers = (gameConfig) => {
 	return players;
 };
 
-// const fixDpi = (canvas) => {
-// 	let dpi = window.devicePixelRatio;
-// 	//get CSS height
-// 	//the + prefix casts it to an integer
-// 	//the slice method gets rid of "px"
-// 	let style_height = +getComputedStyle(canvas).getPropertyValue('height').slice(0, -2);
-// 	//get CSS width
-// 	let style_width = +getComputedStyle(canvas).getPropertyValue('width').slice(0, -2);
-// 	//scale the canvas
-// 	canvas.setAttribute('height', style_height * dpi);
-// 	canvas.setAttribute('width', style_width * dpi);
-// };
-
 export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 	//one grid's width and height
 	let smallestLength = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth;
@@ -129,11 +116,11 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		const canvas = canvasRef.current;
 		const context = canvas.getContext('2d');
 
+		context.translate(0.5, 0.5);
+
 		let frameCount = 0;
 		let animationFrameId;
 		isGameOver = false;
-
-		// fixDpi(canvas);
 
 		const drawGrids = (ctx) => {
 			for (let x = 0; x <= bw; x += gw) {
@@ -345,8 +332,8 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 						let grid = grids[i];
 						if (clickedX <= grid.x + 2 * p && clickedY <= grid.y + 2 * p) {
 							if (grids[i].circles.length > 0) {
-								console.log('clicking on wrong grid');
 								if (grids[i].circles[0].player !== player) {
+									console.log('clicked on wrong grid');
 									clickable = true;
 									return;
 								}
@@ -355,6 +342,10 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 							grids[i].circles.push(new Circle(grid.x, grid.y, player));
 							gridIdx = i;
 							break;
+						} else if (i === grids.length - 1) {
+							console.log('clicked outside the grid');
+							clickable = true;
+							return;
 						}
 					}
 
