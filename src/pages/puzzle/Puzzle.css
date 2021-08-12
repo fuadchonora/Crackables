@@ -1,0 +1,76 @@
+.main-container {
+	padding: 2px;
+	border-radius: 20px;
+	background-color: brown;
+}
+.game-container {
+	position: relative;
+	border-radius: inherit;
+	width: 500px;
+	height: 500px;
+	background-color: brown;
+}
+.tile {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 100px;
+	height: 100px;
+	background-color: darkcyan;
+	box-shadow: 0 0 0 2px brown inset;
+	border-radius: inherit;
+	transition: all 0.5s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column !important;
+	-webkit-box-align: center;
+	-webkit-box-pack: center;
+}
+
+.flex-container {
+	display: flex;
+	flex-wrap: nowrap;
+	background-color: DodgerBlue;
+}
+
+.flex-center {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-ms-flex-align: center;
+	align-items: center;
+	-webkit-box-pack: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+}
+
+.flex-column {
+	-ms-flex-direction: column !important;
+	flex-direction: column !important;
+}
+
+.noselect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+@media only screen and (max-width: 700px) {
+	.main-container {
+		border-radius: 10px;
+	}
+	.game-container {
+		width: 250px;
+		height: 250px;
+	}
+	.tile {
+		width: 50px;
+		height: 50px;
+	}
+}

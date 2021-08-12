@@ -4,6 +4,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 // import Header from './layouts/Header';
 
 import ChainReaction from './pages/chain-reaction/ChainReaction';
+import Puzzle from './pages/puzzle/Puzzle';
 import About from './pages/About';
 import Home from './pages/Home';
 
@@ -15,6 +16,9 @@ export default function Router() {
 				<Switch>
 					<Route path="/chainreaction">
 						<ChainReaction />
+					</Route>
+					<Route path="/puzzle">
+						<Puzzle />
 					</Route>
 					<Route path="/about">
 						<About />

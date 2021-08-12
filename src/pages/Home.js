@@ -60,12 +60,12 @@ export default function Home() {
 					</Grid>
 
 					<Grid item xs={12} className={classes.itemGrid}>
-						<Link to="/25puzzle">
+						<Link to="/puzzle">
 							<div className={classes.section}>
 								<div className={classes.center_text}>
 									<Box m={1}>
 										<Typography style={{ fontWeight: 800 }} variant="h4" component="h2" gutterBottom>
-											25-Puzzle
+											Puzzle
 										</Typography>
 									</Box>
 								</div>
