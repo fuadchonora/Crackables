@@ -1,14 +1,14 @@
 .main-container {
 	padding: 2px;
-	border-radius: 20px;
-	background-color: brown;
+	border-radius: 30px;
+	background-color: #f50057;
 }
 .game-container {
 	position: relative;
 	border-radius: inherit;
 	width: 500px;
 	height: 500px;
-	background-color: brown;
+	background-color: #f50057;
 }
 .tile {
 	position: absolute;
@@ -16,8 +16,11 @@
 	left: 0px;
 	width: 100px;
 	height: 100px;
-	background-color: darkcyan;
-	box-shadow: 0 0 0 2px brown inset;
+	color: #212121;
+	font-size: 20px;
+	font-weight: 800;
+	background-color: #1de9b6;
+	box-shadow: 0 0 0 2px #f50057 inset;
 	border-radius: inherit;
 	transition: all 0.5s;
 	display: flex;
@@ -31,7 +34,6 @@
 .flex-container {
 	display: flex;
 	flex-wrap: nowrap;
-	background-color: DodgerBlue;
 }
 
 .flex-center {
@@ -58,12 +60,15 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.time {
+	font-family: 'Roboto Mono', monospace;
 }
 
 @media only screen and (max-width: 700px) {
 	.main-container {
-		border-radius: 10px;
+		border-radius: 20px;
 	}
 	.game-container {
 		width: 250px;

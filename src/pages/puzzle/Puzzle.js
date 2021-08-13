@@ -14,6 +14,9 @@ let freeTilePos = { x: 0, y: 0 };
 let posSet = [];
 let tiles = [];
 
+let startTime = new Date();
+let timeRunning = true;
+
 const Tile = ({ no }) => (
 	<div id={'tile-' + no} className="tile flex-center flex-column">
 		{no}
@@ -27,6 +30,7 @@ export default function Puzzle() {
 		console.log('rendering');
 
 		const containerTitle = document.getElementById('containerTitle');
+		const timeDOM = document.getElementById('timeDOM');
 		const gameContainer = document.getElementById('gameContainer');
 		const restartGameBtn = document.getElementById('restartGame');
 
@@ -38,6 +42,9 @@ export default function Puzzle() {
 		freeTilePos = { x: 0, y: 0 };
 		posSet = [];
 		tiles = [];
+
+		startTime = new Date();
+		timeRunning = true;
 
 		if (window.innerWidth < 700) {
 			tileSize = 50;
@@ -95,6 +102,7 @@ export default function Puzzle() {
 
 		const shufleTiles = () => {
 			disableUI();
+			resetTime();
 
 			let posSetTemp = [...posSet];
 
@@ -173,12 +181,32 @@ export default function Puzzle() {
 
 			if (status === true) {
 				disableUI();
+				pauseTime();
 				console.log('-----------------Game Over-----------------');
 				containerTitle.innerHTML = 'You Won It.';
 			} else {
 				enableUI();
 			}
 		};
+
+		const pauseTime = () => {
+			console.log('pausing time');
+			timeRunning = false;
+		};
+
+		const resetTime = () => {
+			startTime = new Date();
+			timeRunning = true;
+		};
+
+		setInterval(() => {
+			if (timeRunning) {
+				let time = new Date() - startTime;
+				// winTime = time;
+				time = new Date(time).toISOString().slice(11, -1);
+				timeDOM.innerHTML = time;
+			}
+		}, 102);
 
 		gameContainer.addEventListener('mousedown', function (event) {
 			if (event.target.className.includes('tile')) {
