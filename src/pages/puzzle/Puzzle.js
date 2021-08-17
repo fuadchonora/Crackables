@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { IconButton } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import RestartIcon from '@material-ui/icons/Replay';
 import './Puzzle.css';
+import Title from '../../components/Title';
 
 let tileSize = 100;
 let size = 5;
@@ -244,14 +244,10 @@ export default function Puzzle() {
 
 	return (
 		<>
-			<h1>
-				<IconButton aria-label="delete" color="secondary" component={Link} to="/">
-					<ArrowBackIcon fontSize="large" />
-				</IconButton>
-				<label id="containerTitle" className="noselect">
-					Slide It & Win
-				</label>
-			</h1>
+			<Title title={'Slide It & Win'} Icon={ArrowBackIcon} to={'/'} />
+			<label id="containerTitle" className="noselect">
+				Slide It & Win
+			</label>
 			<div style={{ height: '70vh' }}>
 				<div className="flex-center flex-column">
 					<h5 id="timeDOM" className="time noselect">

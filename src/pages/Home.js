@@ -1,13 +1,11 @@
 import React from 'react';
-import { Box, Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
+import { Box, Grid, makeStyles, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
 
+import Title from '../components/Title';
+
 const useStyles = makeStyles((theme) => ({
-	head: {
-		paddingLeft: theme.spacing(2),
-		paddingRight: theme.spacing(2),
-	},
 	rootGrid: {
 		textAlign: 'center',
 		padding: theme.spacing(4),
@@ -48,14 +46,7 @@ export default function Home() {
 
 	return (
 		<div>
-			<div className={classes.head}>
-				<h1>
-					<IconButton aria-label="delete" color="secondary">
-						<HomeIcon fontSize="large" />
-					</IconButton>
-					Crackables
-				</h1>
-			</div>
+			<Title title={'Crackables'} Icon={HomeIcon} />
 			<div>
 				<Grid container spacing={0} className={classes.rootGrid}>
 					{games.map((game) => (

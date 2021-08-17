@@ -1,13 +1,10 @@
-import { IconButton, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { Link } from 'react-router-dom';
+
+import Title from '../../components/Title';
 
 const useStyles = makeStyles((theme) => ({
-	head: {
-		paddingLeft: theme.spacing(2),
-		paddingRight: theme.spacing(2),
-	},
 	body: {
 		paddingLeft: theme.spacing(4),
 		paddingRight: theme.spacing(4),
@@ -35,14 +32,7 @@ export default function ChainReactionStart({ setIsStarted, setgameConfig }) {
 
 	return (
 		<div>
-			<div className={classes.head}>
-				<h1>
-					<IconButton aria-label="delete" color="secondary" component={Link} to="/">
-						<ArrowBackIcon fontSize="large" />
-					</IconButton>
-					Chain Reaction
-				</h1>
-			</div>
+			<Title title={'Chain Reaction'} Icon={ArrowBackIcon} to={'/'} />
 
 			<div className={classes.body}>
 				<label>Grid Size</label>
