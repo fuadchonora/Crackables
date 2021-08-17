@@ -1,0 +1,118 @@
+.wrapper {
+	overscroll-behavior: none;
+}
+#menu {
+	display: none;
+	position: absolute;
+}
+
+.main-container {
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+.game-container-row {
+	margin: 0px !important;
+}
+.road {
+	position: relative;
+	overflow: hidden;
+	padding: 0px !important;
+	height: 100vh;
+	width: 100%;
+	background-color: #25337a;
+	border: 1px solid #839bf3;
+}
+#point {
+	position: absolute;
+	right: 0px;
+	top: 0px;
+	height: 60px;
+	width: 60px;
+	color: white;
+	font-size: x-large;
+}
+.container-car {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	bottom: 100px;
+	transition: all 0.5s;
+}
+.container-car-left {
+	left: 0px;
+}
+.container-car-right {
+	left: 100px;
+}
+.car {
+	height: 80px;
+	width: 80px;
+}
+
+.slide-left {
+	animation-name: slideLeft;
+	animation-duration: 0.5s;
+}
+.slide-right {
+	animation-name: slideRight;
+	animation-duration: 0.5s;
+}
+
+@keyframes slideLeft {
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(-20deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+@keyframes slideRight {
+	0% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(20deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
+}
+
+.round {
+	height: 50px;
+	width: 50px;
+	left: 0px;
+	top: 0px;
+}
+.square {
+	height: 50px;
+	width: 50px;
+	left: 0px;
+	top: 0px;
+}
+.round-cont {
+	height: 100px;
+	width: 100px;
+	position: absolute;
+	top: -100px;
+}
+.square-cont {
+	height: 100px;
+	width: 100px;
+	position: absolute;
+	top: -100px;
+}
+
+.noselect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}

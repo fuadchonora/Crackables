@@ -5,10 +5,10 @@ html {
 html,
 body {
 	font-family: 'Poppins', sans-serif;
-	margin: 10px;
 }
 
 body {
+	margin: 0px;
 	background-color: #212121;
 	color: white;
 }

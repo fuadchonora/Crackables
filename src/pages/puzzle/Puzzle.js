@@ -253,12 +253,12 @@ export default function Puzzle() {
 				</label>
 			</h1>
 			<div style={{ height: '70vh' }}>
-				<div className="flex-center flex-column noselect">
+				<div className="flex-center flex-column">
 					<h5 id="timeDOM" className="time noselect">
 						00:00:00.000
 					</h5>
 
-					<div className="main-container noselect">
+					<div className="main-container flex-center flex-column">
 						<div id="gameContainer" className="game-container noselect">
 							{isInited && tiles.map((tile) => <Tile no={tile.no} key={tile.no} />)}
 						</div>

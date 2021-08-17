@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import ChainReaction from './pages/chain-reaction/ChainReaction';
 import Puzzle from './pages/puzzle/Puzzle';
+import Cars from './pages/cars/Cars';
 import About from './pages/About';
 import Home from './pages/Home';
 
@@ -19,6 +20,9 @@ export default function Router() {
 					</Route>
 					<Route path="/puzzle">
 						<Puzzle />
+					</Route>
+					<Route path="/cars">
+						<Cars />
 					</Route>
 					<Route path="/about">
 						<About />

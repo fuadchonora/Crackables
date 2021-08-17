@@ -4,13 +4,18 @@ import { Link } from 'react-router-dom';
 import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
-	rootGrid: {
-		textAlign: 'center',
+	head: {
 		paddingLeft: theme.spacing(2),
 		paddingRight: theme.spacing(2),
 	},
+	rootGrid: {
+		textAlign: 'center',
+		padding: theme.spacing(4),
+	},
 	itemGrid: {
 		minHeight: '20vh',
+		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2),
 	},
 	section: {
 		height: '20vh',
@@ -32,46 +37,42 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
+const games = [
+	{ title: 'Chain Reaction', to: '/chainreaction' },
+	{ title: 'Puzzle', to: '/puzzle' },
+	{ title: 'Cars', to: '/cars' },
+];
+
 export default function Home() {
 	const classes = useStyles();
 
 	return (
 		<div>
-			<h1>
-				<IconButton aria-label="delete" color="secondary">
-					<HomeIcon fontSize="large" />
-				</IconButton>
-				Crackables
-			</h1>
+			<div className={classes.head}>
+				<h1>
+					<IconButton aria-label="delete" color="secondary">
+						<HomeIcon fontSize="large" />
+					</IconButton>
+					Crackables
+				</h1>
+			</div>
 			<div>
-				<Grid container spacing={4} className={classes.rootGrid}>
-					<Grid item xs={12} className={classes.itemGrid}>
-						<Link to="/chainreaction">
-							<div className={classes.section}>
-								<div className={classes.center_text}>
-									<Box m={1}>
-										<Typography style={{ fontWeight: 800 }} variant="h4" component="h2" gutterBottom>
-											Chain Reaction
-										</Typography>
-									</Box>
+				<Grid container spacing={0} className={classes.rootGrid}>
+					{games.map((game) => (
+						<Grid item xs={12} className={classes.itemGrid} key={game.to}>
+							<Link to={game.to}>
+								<div className={classes.section}>
+									<div className={classes.center_text}>
+										<Box m={1}>
+											<Typography style={{ fontWeight: 800 }} variant="h4" component="h2" gutterBottom>
+												{game.title}
+											</Typography>
+										</Box>
+									</div>
 								</div>
-							</div>
-						</Link>
-					</Grid>
-
-					<Grid item xs={12} className={classes.itemGrid}>
-						<Link to="/puzzle">
-							<div className={classes.section}>
-								<div className={classes.center_text}>
-									<Box m={1}>
-										<Typography style={{ fontWeight: 800 }} variant="h4" component="h2" gutterBottom>
-											Puzzle
-										</Typography>
-									</Box>
-								</div>
-							</div>
-						</Link>
-					</Grid>
+							</Link>
+						</Grid>
+					))}
 				</Grid>
 			</div>
 		</div>
