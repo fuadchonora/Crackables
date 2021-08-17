@@ -35,10 +35,10 @@ let fogSettings = {
 	idx: 0,
 	density: 20,
 	minSize: 15,
-	maxSize: 25,
-	minSpeed: 0,
-	maxSpeed: 0,
-	gravity: 0.5,
+	maxSize: 20,
+	minSpeed: 10,
+	maxSpeed: 20,
+	gravity: 1,
 	maxLife: 100,
 };
 
@@ -71,36 +71,35 @@ export default function Cars() {
 		const carLeft = document.getElementById('car-left');
 		const carRight = document.getElementById('car-right');
 
-		//Utiliy functions
-
+		//Utiliy Controls
 		const enableUI = () => (UIEnabled = true);
 		const disableUI = () => (UIEnabled = false);
 		const resumeGame = () => (isRunning = true);
 		const pauseGame = () => (isRunning = false);
 
-		function updatePoint() {
+		const updatePoint = () => {
 			point++;
 			console.log('Point:' + point);
 
-			speed += 0.1;
-		}
+			speed += 0.2;
+		};
 
-		function gameOver() {
+		const gameOver = () => {
 			pauseGame();
 			disableUI();
 			console.log('Game Over! Point:' + point);
-		}
+		};
 
-		function distance(x1, y1, x2, y2) {
+		const distance = (x1, y1, x2, y2) => {
 			const xDistance = x2 - x1;
 			const yDistance = y2 - y1;
 
 			return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2));
-		}
+		};
 
 		// Returns an random integer, positive or negative
 		// between the given value
-		function randInt(min, max, positive) {
+		const randInt = (min, max, positive) => {
 			let num;
 			if (!positive) {
 				num = Math.floor(Math.random() * max) - min;
@@ -110,9 +109,9 @@ export default function Cars() {
 			}
 
 			return num;
-		}
+		};
 
-		function randomObstacle() {
+		const randomObstacle = () => {
 			const idx = randInt(0, 8, true);
 
 			if ([0, 1, 2, 3].includes(idx))
@@ -129,9 +128,9 @@ export default function Cars() {
 				};
 
 			return null;
-		}
+		};
 
-		function touchXY(e) {
+		const touchXY = (e) => {
 			if (!UIEnabled) return;
 
 			let { pageX, pageY } = e.targetTouches[0];
@@ -146,40 +145,42 @@ export default function Cars() {
 
 			// console.log(`${touchX * dpr} < ${rWidthDouble}`);
 			touchY && touchX * dpr < rWidthDouble ? cars[0].toggle() : cars[1].toggle();
-		}
+		};
 
 		//Objects
-		function Car(id, isLeft, img, x, y, width, height) {
-			this.id = id;
-			this.isLeft = isLeft;
-			this.isMOving = false;
-			this.x = x;
-			this.y = y;
-			this.velocity = {
-				x: 0,
-				y: 0,
-				angle: 0,
-			};
-			this.width = width;
-			this.height = height;
-			this.angle = 0;
-			this.img = img;
+		class Car {
+			constructor(id, isLeft, img, x, y, width, height) {
+				this.id = id;
+				this.isLeft = isLeft;
+				this.isMOving = false;
+				this.x = x;
+				this.y = y;
+				this.velocity = {
+					x: 0,
+					y: 0,
+					angle: 0,
+				};
+				this.width = width;
+				this.height = height;
+				this.angle = 0;
+				this.img = img;
+			}
 
-			this.toggle = () => {
+			toggle = () => {
 				if (this.isLeft) {
 					//move right
 					this.isLeft = false;
-					this.velocity.angle = speed / 2;
+					this.velocity.angle = speed / 4;
 					this.velocity.x = speed;
 				} else {
 					//move left
 					this.isLeft = true;
-					this.velocity.angle = -speed / 2;
+					this.velocity.angle = -speed / 4;
 					this.velocity.x = -speed;
 				}
 			};
 
-			this.update = () => {
+			update = () => {
 				if (this.id === 0 && (this.x < 0 || this.x > rWidth)) {
 					this.velocity.x = 0;
 					this.x = this.isLeft ? 0 : rWidth;
@@ -197,13 +198,13 @@ export default function Cars() {
 					this.velocity.angle = 0;
 					this.angle = 0;
 				} else if (this.angle > 30) {
-					this.velocity.angle = -speed / 2;
+					this.velocity.angle = -speed / 4;
 				} else if (this.angle < -30) {
-					this.velocity.angle = speed / 2;
+					this.velocity.angle = speed / 4;
 				}
 			};
 
-			this.draw = () => {
+			draw = () => {
 				ctx.beginPath();
 				ctx.save();
 				ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
@@ -215,16 +216,18 @@ export default function Cars() {
 			};
 		}
 
-		function Circle(id, img, x, y, width, height) {
-			this.id = id;
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.img = img;
-			this.isVisible = true;
+		class Circle {
+			constructor(id, img, x, y, width, height) {
+				this.id = id;
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.img = img;
+				this.isVisible = true;
+			}
 
-			this.blink = () => {
+			blink = () => {
 				let count = 1;
 				let intrvl = setInterval(() => {
 					this.isVisible = !this.isVisible;
@@ -233,7 +236,7 @@ export default function Cars() {
 				}, 250);
 			};
 
-			this.update = (cars) => {
+			update = (cars) => {
 				for (let i in cars) {
 					let dist = distance(this.x, this.y, cars[i].x, cars[i].y);
 					if (dist - (this.height / 2 + cars[i].height / 2) <= 0) {
@@ -253,7 +256,7 @@ export default function Cars() {
 				this.y += speed;
 			};
 
-			this.draw = () => {
+			draw = () => {
 				if (!this.isVisible) return;
 
 				ctx.beginPath();
@@ -263,15 +266,17 @@ export default function Cars() {
 				ctx.closePath();
 			};
 		}
-		function Square(id, img, x, y, width, height) {
-			this.id = id;
-			this.x = x;
-			this.y = y;
-			this.width = width;
-			this.height = height;
-			this.img = img;
+		class Square {
+			constructor(id, img, x, y, width, height) {
+				this.id = id;
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+				this.img = img;
+			}
 
-			this.update = (cars) => {
+			update = (cars) => {
 				for (let i in cars) {
 					let dist = distance(this.x, this.y, cars[i].x, cars[i].y);
 
@@ -296,7 +301,7 @@ export default function Cars() {
 				this.y += speed;
 			};
 
-			this.draw = () => {
+			draw = () => {
 				ctx.save();
 				ctx.beginPath();
 				ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
@@ -305,15 +310,17 @@ export default function Cars() {
 			};
 		}
 		//fog particle
-		function FogParticle(id, x, y) {
-			this.id = id;
-			this.x = x;
-			this.y = y;
-			this.xv = randInt(fogSettings.minSpeed, fogSettings.maxSpeed, false);
-			this.yv = randInt(fogSettings.minSpeed, fogSettings.maxSpeed, false);
-			this.size = randInt(fogSettings.minSize, fogSettings.maxSize, true);
+		class FogParticle {
+			constructor(id, x, y) {
+				this.id = id;
+				this.x = x;
+				this.y = y;
+				this.xv = randInt(fogSettings.minSpeed, fogSettings.maxSpeed, false);
+				this.yv = randInt(fogSettings.minSpeed, fogSettings.maxSpeed, true);
+				this.size = randInt(fogSettings.minSize, fogSettings.maxSize, true);
+			}
 
-			this.update = () => {
+			update = () => {
 				this.x += this.xv;
 				this.y += this.yv;
 
@@ -329,37 +336,39 @@ export default function Cars() {
 				}
 			};
 
-			this.draw = () => {
+			draw = () => {
 				ctx.beginPath();
 				ctx.fillStyle = '#ffffff';
-				ctx.rect(this.x, this.y, fogSettings.particleSize, fogSettings.particleSize);
-				// ctx.arc(this.x, this.y, fogSettings.particleSize, 0, Math.PI * 2, true);
+				ctx.rect(this.x, this.y, this.size, this.size);
 				ctx.closePath();
 				ctx.fill();
 			};
 		}
 		// Particle
-		function ExplosionParticle(x, y, isL, isWhite) {
-			this.x = x + rWidthQrtr;
-			this.y = y + rWidthQrtr;
-			this.xv = randInt(explosionSettions.minSpeed, explosionSettions.maxSpeed, false);
-			this.yv = randInt(explosionSettions.minSpeed, explosionSettions.maxSpeed, false);
-			this.size = randInt(explosionSettions.minSize, explosionSettions.maxSize, true);
-			this.r = isWhite ? 255 : isL ? 240 : 0;
-			this.g = isWhite ? 255 : isL ? 58 : 170;
-			this.b = isWhite ? 255 : isL ? 98 : 195;
+		class ExplosionParticle {
+			constructor(x, y, isL, isWhite) {
+				this.x = x + rWidthQrtr;
+				this.y = y + rWidthQrtr;
+				this.xv = randInt(explosionSettions.minSpeed, explosionSettions.maxSpeed, false);
+				this.yv = randInt(explosionSettions.minSpeed, explosionSettions.maxSpeed, false);
+				this.size = randInt(explosionSettions.minSize, explosionSettions.maxSize, true);
+				this.r = isWhite ? 255 : isL ? 240 : 0;
+				this.g = isWhite ? 255 : isL ? 58 : 170;
+				this.b = isWhite ? 255 : isL ? 98 : 195;
+			}
 		}
 		// Explosion
-		function Explosion(x, y, isL) {
-			this.particles = [];
-
-			for (let i = 0; i < explosionSettions.density; i++) {
-				this.particles.push(new ExplosionParticle(x, y, isL, i % 3 === 0 ? true : false));
+		class Explosion {
+			constructor(x, y, isL) {
+				this.particles = [];
+				for (let i = 0; i < explosionSettions.density; i++) {
+					this.particles.push(new ExplosionParticle(x, y, isL, i % 3 === 0 ? true : false));
+				}
 			}
 		}
 
 		//Implimentations
-		function addObstacle() {
+		const addObstacle = () => {
 			if (spawnInterval > 400) spawnInterval -= spawnSpeed;
 			setTimeout(() => {
 				addObstacle();
@@ -389,11 +398,11 @@ export default function Cars() {
 					obstacleWidth
 				);
 			}
-		}
-		function addFogParticle() {
+		};
+		const addFogParticle = () => {
 			setTimeout(() => {
 				addFogParticle();
-			}, 100);
+			}, 1000 / fogSettings.density);
 
 			if (!isRunning) return;
 
@@ -408,10 +417,10 @@ export default function Cars() {
 			fogParticles[particleR.id] = particleR;
 
 			fogSettings.idx += 2;
-		}
+		};
 
 		// Draw explosions
-		function drawExplosion() {
+		const drawExplosion = () => {
 			if (explosions.length === 0) {
 				return;
 			}
@@ -438,9 +447,8 @@ export default function Cars() {
 
 					ctx.beginPath();
 					ctx.rect(particle.x, particle.y, particle.size, particle.size);
-					// ctx.arc(particle.x, particle.y, particle.size, Math.PI * 2, 0, false);
 					ctx.closePath();
-					ctx.fillStyle = 'rgb(' + particle.r + ',' + particle.g + ',' + particle.b + ')';
+					ctx.fillStyle = `rgb(${particle.r},${particle.g},${particle.b})`;
 					ctx.fill();
 
 					// Update
@@ -451,9 +459,9 @@ export default function Cars() {
 
 				explosion.particles = particlesAfterRemoval;
 			}
-		}
+		};
 
-		function init() {
+		const init = () => {
 			if (windowWidth > 700) {
 				windowWidth = 400;
 			}
@@ -493,10 +501,10 @@ export default function Cars() {
 				addObstacle();
 				addFogParticle();
 			}, 1000);
-		}
+		};
 
 		//Animation Loop
-		function update() {
+		const update = () => {
 			requestAnimationFrame(update);
 
 			if (!isRunning) return;
@@ -514,8 +522,8 @@ export default function Cars() {
 			for (let i in fogParticles) {
 				fogParticles[i].update();
 			}
-		}
-		function animate() {
+		};
+		const animate = () => {
 			requestAnimationFrame(animate);
 
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -543,7 +551,7 @@ export default function Cars() {
 
 			ctx.closePath();
 
-			cars.forEach(function (car) {
+			cars.forEach((car) => {
 				car.draw();
 			});
 			for (let i in circles) {
@@ -558,15 +566,15 @@ export default function Cars() {
 
 			//draw explosion animation
 			drawExplosion();
-		}
+		};
 
-		function startOrRestartGame() {
+		const startOrRestartGame = () => {
 			disableUI();
 			init();
 			update();
 			animate();
 			enableUI();
-		}
+		};
 
 		//start
 		startOrRestartGame();
