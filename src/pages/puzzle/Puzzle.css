@@ -48,20 +48,6 @@
 	justify-content: center;
 }
 
-.flex-column {
-	-ms-flex-direction: column !important;
-	flex-direction: column !important;
-}
-
-.noselect {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
 .time {
 	font-family: 'Roboto Mono', monospace;
 }

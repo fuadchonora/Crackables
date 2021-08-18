@@ -1,6 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import { IconButton } from '@material-ui/core';
+import PauseIcon from '@material-ui/icons/Pause';
+import UndoIcon from '@material-ui/icons/Undo';
 
 const colors = ['red', 'blue', 'green', 'yellow', 'cyan', 'magenta', 'orange', 'gray'];
+const dpr = window.devicePixelRatio;
 
 let players = [];
 let grids = [];
@@ -116,23 +120,28 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 		const canvas = canvasRef.current;
 		const context = canvas.getContext('2d');
 
-		context.translate(0.5, 0.5);
-
 		let frameCount = 0;
 		let animationFrameId;
 		isGameOver = false;
 
 		const drawGrids = (ctx) => {
+			canvas.width = cw * dpr;
+			canvas.height = ch * dpr;
+
+			canvas.style.width = `${cw}px`;
+			canvas.style.height = `${ch}px`;
+
 			for (let x = 0; x <= bw; x += gw) {
-				ctx.moveTo(x + p, p);
-				ctx.lineTo(x + p, bh + p);
+				ctx.moveTo((x + p) * dpr, p * dpr);
+				ctx.lineTo((x + p) * dpr, (bh + p) * dpr);
 			}
 
 			for (let x = 0; x <= bh; x += gh) {
-				ctx.moveTo(p, x + p);
-				ctx.lineTo(bw + p, x + p);
+				ctx.moveTo(p * dpr, (x + p) * dpr);
+				ctx.lineTo((bw + p) * dpr, (x + p) * dpr);
 			}
 
+			ctx.lineWidth = 2;
 			ctx.strokeStyle = players.find((player) => player === currentPlayer).color;
 			ctx.stroke();
 		};
@@ -144,7 +153,7 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 				explosion.arcs.map((arc) => {
 					ctx.fillStyle = explosion.color;
 					ctx.beginPath();
-					ctx.arc(arc.curX, arc.curY, p, 0, 2 * Math.PI);
+					ctx.arc(arc.curX * dpr, arc.curY * dpr, p * dpr, 0, 2 * Math.PI);
 					ctx.fill();
 
 					explodedToIds.push(arc.tarGridIdx);
@@ -166,15 +175,13 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 					ctx.fillStyle = circle.player.color;
 					ctx.beginPath();
 					ctx.arc(
-						grid.x + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index % 2),
-						grid.y + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index + (1 % 2)),
-						p,
+						(grid.x + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index % 2)) * dpr,
+						(grid.y + p * Math.sin(frameCount * 0.02 * grid.circles.length) * (index + (1 % 2))) * dpr,
+						p * dpr,
 						0,
 						2 * Math.PI
 					);
 					ctx.fill();
-					// ctx.font = '24px serif';
-					// ctx.fillText(grid.circles.length, grid.x + p, grid.y + 2 * p);
 					return true;
 				})
 			);
@@ -315,54 +322,61 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 
 		//Events
 		canvas.addEventListener(
-			'click',
+			'touchstart',
 			(e) => {
-				console.log('(' + clickable + ') clicked ' + e.pageX, +' ' + e.pageY);
-				if (isGameOver) {
-					//go home
-					setIsStarted(false);
-				} else if (clickable) {
-					clickable = false;
-					let player = players.find((player) => player === currentPlayer);
-					let clickedX = e.pageX - 2 * p;
-					let clickedY = e.pageY - 2 * p;
+				if (isGameOver) return setIsStarted(false);
+				if (!clickable) return;
 
-					let gridIdx = 0;
-					for (let i = 0; i < grids.length; i++) {
-						let grid = grids[i];
-						if (clickedX <= grid.x + 2 * p && clickedY <= grid.y + 2 * p) {
-							if (grids[i].circles.length > 0) {
-								if (grids[i].circles[0].player !== player) {
-									console.log('clicked on wrong grid');
-									clickable = true;
-									return;
-								}
-							}
+				clickable = false;
+				let player = players.find((player) => player === currentPlayer);
 
-							grids[i].circles.push(new Circle(grid.x, grid.y, player));
-							gridIdx = i;
-							break;
-						} else if (i === grids.length - 1) {
-							console.log('clicked outside the grid');
-							clickable = true;
-							return;
-						}
-					}
+				let { pageX, pageY } = e.targetTouches[0];
+				let touchX = pageX - canvas.offsetLeft;
+				let touchY = pageY - canvas.offsetTop;
 
-					let clickedGrid = grids[gridIdx];
-					if (clickedGrid.circles.length === clickedGrid.splitsTo.length) {
-						//split circles
-						refineGrids(gridIdx)
-							.then(() => {
-								console.log('All Grids Refined');
-								changeCurrentPlayer();
+				if (e.targetTouches.length > 1) {
+					pageX = e.targetTouches[e.targetTouches.length - 1].pageX;
+					pageY = e.targetTouches[e.targetTouches.length - 1].pageY;
+					touchX = pageX - canvas.offsetLeft;
+					touchY = pageY - canvas.offsetTop;
+				}
+
+				let gridIdx = 0;
+				for (let i = 0; i < grids.length; i++) {
+					let grid = grids[i];
+					console.log();
+					if (touchX <= grid.x + 2 * p && touchY <= grid.y + 2 * p) {
+						if (grids[i].circles.length > 0) {
+							if (grids[i].circles[0].player !== player) {
+								console.log('clicked on wrong grid');
 								clickable = true;
-							})
-							.catch(console.error);
-					} else {
-						changeCurrentPlayer();
+								return;
+							}
+						}
+
+						grids[i].circles.push(new Circle(grid.x, grid.y, player));
+						gridIdx = i;
+						break;
+					} else if (i === grids.length - 1) {
+						console.log('clicked outside the grid');
 						clickable = true;
+						return;
 					}
+				}
+
+				let clickedGrid = grids[gridIdx];
+				if (clickedGrid.circles.length === clickedGrid.splitsTo.length) {
+					//split circles
+					refineGrids(gridIdx)
+						.then(() => {
+							console.log('All Grids Refined');
+							changeCurrentPlayer();
+							clickable = true;
+						})
+						.catch(console.error);
+				} else {
+					changeCurrentPlayer();
+					clickable = true;
 				}
 			},
 			false
@@ -374,7 +388,15 @@ export default function ChainReactionGame({ gameConfig, setIsStarted }) {
 	});
 
 	return (
-		<div>
+		<div className="flex-center flex-column">
+			<div className="flex-column">
+				<IconButton aria-label="delete" color="secondary">
+					<UndoIcon fontSize="large" />
+				</IconButton>
+				<IconButton aria-label="delete" color="secondary">
+					<PauseIcon fontSize="large" />
+				</IconButton>
+			</div>
 			<canvas ref={canvasRef} width={cw} height={ch}></canvas>
 		</div>
 	);
