@@ -25,11 +25,11 @@ const Tile = ({ no }) => (
 
 export default function Puzzle() {
 	const [isInited, setIsInited] = useState(false);
+	const [title, setTitle] = useState('Slide It & Win');
 
 	useEffect(() => {
 		console.log('rendering');
 
-		const containerTitle = document.getElementById('containerTitle');
 		const timeDOM = document.getElementById('timeDOM');
 		const gameContainer = document.getElementById('gameContainer');
 		const restartGameBtn = document.getElementById('restartGame');
@@ -124,7 +124,7 @@ export default function Puzzle() {
 			freeTilePos.x = posSetTemp[0]['x'];
 			freeTilePos.y = posSetTemp[0]['y'];
 
-			containerTitle.innerHTML = 'Slide It & Win';
+			setTitle('Slide It & Win');
 			enableUI();
 		};
 
@@ -182,8 +182,8 @@ export default function Puzzle() {
 			if (status === true) {
 				disableUI();
 				pauseTime();
+				setTitle('SYou Won It.');
 				console.log('-----------------Game Over-----------------');
-				containerTitle.innerHTML = 'You Won It.';
 			} else {
 				enableUI();
 			}
@@ -208,23 +208,23 @@ export default function Puzzle() {
 			}
 		}, 102);
 
-		gameContainer.addEventListener('mousedown', function (event) {
-			if (event.target.className.includes('tile')) {
-				// console.log('tile clicked');
-				if (uiEnabled === true) {
-					moveTile(event.target);
-				}
-			}
-		});
-
-		// gameContainer.addEventListener('touchstart', function (event) {
+		// gameContainer.addEventListener('mousedown', function (event) {
 		// 	if (event.target.className.includes('tile')) {
-		// 		console.log('tile touched');
+		// 		// console.log('tile clicked');
 		// 		if (uiEnabled === true) {
 		// 			moveTile(event.target);
 		// 		}
 		// 	}
 		// });
+
+		gameContainer.addEventListener('touchstart', function (event) {
+			if (event.target.className.includes('tile')) {
+				console.log('tile touched');
+				if (uiEnabled === true) {
+					moveTile(event.target);
+				}
+			}
+		});
 
 		restartGameBtn.addEventListener('click', function (event) {
 			shufleTiles();
@@ -244,10 +244,8 @@ export default function Puzzle() {
 
 	return (
 		<>
-			<Title title={'Slide It & Win'} Icon={ArrowBackIcon} to={'/'} />
-			<label id="containerTitle" className="noselect">
-				Slide It & Win
-			</label>
+			<Title title={title} Icon={ArrowBackIcon} to={'/'} />
+
 			<div style={{ height: '70vh' }}>
 				<div className="flex-center flex-column">
 					<h5 id="timeDOM" className="time noselect">
@@ -259,6 +257,7 @@ export default function Puzzle() {
 							{isInited && tiles.map((tile) => <Tile no={tile.no} key={tile.no} />)}
 						</div>
 					</div>
+
 					<div>
 						<IconButton aria-label="delete" color="secondary" id="restartGame">
 							<RestartIcon fontSize="large" />

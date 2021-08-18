@@ -14,7 +14,7 @@ export default function Title({ title, Icon, to }) {
 
 	return (
 		<div className={classes.title}>
-			<h1>
+			<h1 className="noselect">
 				<IconButton aria-label="delete" color="secondary" component={to && Link} to={to && to}>
 					<Icon fontSize="large" />
 				</IconButton>
